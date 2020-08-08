@@ -1,0 +1,41 @@
+*{
+    margin: 0;
+    padding: 0;
+    text-decoration: none;    
+}
+
+a{
+    
+}
+
+nav{
+    height: 50px;
+}
+
+nav > div.navwrapper{
+    height: 50px;    
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: #eeeeee;
+    z-index: 10;
+    font-size: 0;
+}
+nav > div.navwrapper > div{
+    line-height: 50px;
+    vertical-align: middle;
+    padding-left: 20px;
+    font-size: 1rem;
+}
+
+main{
+    margin: 10px;
+}
+main > ul{
+    margin: 10px;
+}
+main > ul > li{
+    margin: 10px;
+}
+

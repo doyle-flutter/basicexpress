@@ -1,0 +1,10 @@
+// sqlMessage: 'Client does not support authentication protocol requested by server; consider upgrading MySQL client',
+// --> ERR : ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'abc123456';
+
+CREATE TABLE `app` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `title` varchar(30) NOT NULL,
+    `des` text,
+    `created` datetime default current_timestamp,
+    PRIMARY KEY (`id`)
+);

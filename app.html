@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ex</title>
+    <link rel="stylesheet" href="/mainapp.css">
+</head>
+<body>
+    <nav>
+        <div class="navwrapper">
+            <div><a href="/login">Login</a></div>
+        </div>
+    </nav>
+    <main>
+        <h1>Express & Socket.io</h1>
+        <ul>
+            <li><a href="/fpage">SEND File Page</a></li>
+            <li><a href="/sqls">MySQL CRUD Page</a>
+                <ul style="padding-left: 20px;">
+                    <li><a href="/sqls/1">SQL Data Limit 1</a></li>
+                    <li><a href="/sqls/2">SQL Data Limit 2</a></li>
+                    <li><a href="/sqls/3">SQL Data Limit 3</a></li>
+                </ul>
+            </li>
+            <li><a href="/renderHtml">PUG Render Page</a></li>
+            <li><a href="/chatPug">PUG Render Chat Page</a></li>
+        </ul>
+        <div style="height: 1000px; background-color: red;"></div>
+    </main>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io('ws://192.168.0.2:3000');
+        socket.emit('open', {'key':'value'});
+        socket.on('welcome', (data) => {
+            // alert(`${data['title']} : ${data['des']}`);
+        });
+        
+    </script>
+</body>
+</html>

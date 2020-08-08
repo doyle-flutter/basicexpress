@@ -1,0 +1,33 @@
+*{
+    margin: 0;
+    padding:0;
+}
+
+.chatInputTxt{
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+}
+div.chatInputTxt > form{
+    font-size: 0;
+}
+div.chatInputTxt > form > input.txtInput{
+    height: 50px;
+    width: 90%;
+    padding: 0;
+    margin: 0;
+    border: 1px black solid;
+}
+
+div.chatInputTxt > form > input.txtInputSubmit{
+    width:10%;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    height: 50px;
+    padding: 0;
+    margin: 0;
+    border: 1px black solid;
+}

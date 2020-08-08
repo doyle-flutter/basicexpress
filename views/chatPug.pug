@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+html(lang="ko")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        meta(http-equiv="X-UA-Compatible", content="ie=edge")
+        title ChatPage
+        style
+            include ../styles/chatcss.css
+    body
+        div
+            p(id="userId")
+        div(id="chatTxt")
+        div(class="chatInputTxt")
+            form(action="/chat", method="post" onsubmit="return false" id="chatForm")
+                input(type="text", name="text" class="txtInput")
+                input(type="submit", value="전송" class="txtInputSubmit")
+        script(src="/socket.io/socket.io.js")
+        script.
+            window.onload = () => {
+                let id = sessionStorage.getItem('id');
+                let userId = document.getElementById('userId');
+                const socket = io('ws://192.168.0.2:3000');
+                if(id == null) userId.innerText = "로그인이 필요합니다";
+                else userId.innerText = id;
+                let chatBtn = document.getElementById('chatForm');
+                chatBtn.onsubmit = () => {
+                    console.log(id);
+                    socket.emit('open', "EOPEOPEOP");
+                    if(id == null) return false;
+                    return false;
+                }
+            }
+        
+
+    

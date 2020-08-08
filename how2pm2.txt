@@ -1,0 +1,74 @@
+$ pm2 start app.js
+
+// -- -- --
+
+// 모든 CPU를 사용하기 위해서는 애플리케이션을 클러스터 모드로 실행
+// ecosystem.config.js
+
+module.exports = {
+  apps: [{
+  name: 'app',
+  script: './app.js',
+  instances: 0, // instance 항목값을 ‘0’으로 설정하면 CPU 코어 수 만큼 프로세스를 생성
+  exec_mode: ‘cluster’
+  }]
+
+// -> $ pm2 start ecosystem.config.js
+
+// -- -- --
+// 프로세스 개수를 늘리거나(scale up) 줄여야(scale down) 한다면 pm2 scale
+// scale up -> $ pm2 scale app +4
+// scale down -> $ pm2 scale app 4
+
+// -- -- --
+module.exports = {
+  apps: [{
+  name: 'app',
+  script: './app.js',
+  instances: 0,
+  exec_mode: ‘cluster’,
+  wait_ready: true,
+  listen_timeout: 50000,
+  kill_timeout: 5000
+  }]
+}
+
+// ->
+app.listen(port, function () {
+  process.send(‘ready’)
+  console.log(`application is listening on port ${port}...`)
+})
+process.on(‘SIGINT’, function () {
+  app.close(function () {
+  console.log(‘server closed’)
+  process.exit(0)
+  })
+
+// -- -- --
+정 전역 플래그값에 따라 응답 헤더에 ‘Connection: close’를 설정해 
+클라이언트 요청을 종료하는 방법을 활용, 타임아웃으로 서비스가 중단되는 문제를 해결
+
+let isDisableKeepAlive = false
+app.use(function(req, res, next) {
+  if (isDisableKeepAlive) {
+    res.set(‘Connection’, ‘close’)
+  }
+  next()
+})
+app.get('/', function(req, res) { 
+  res.send('Hello World!')
+})
+app.listen(port, function() {
+  process.send(‘ready’)
+  console.log(`application is listening on port ${port}...`)
+})
+process.on(‘SIGINT’, function () {
+  isDisableKeepAlive = true
+  app.close(function () {
+  console.log(‘server closed’)
+  process.exit(0)
+  })
+})
+
+// -- -- --
+// $ pm2 reload app

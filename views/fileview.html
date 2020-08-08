@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>File Page</title>
+</head>
+<body>
+    <div>
+        <p><a href="/">Home</a></p>
+    </div>
+    <div>
+        <div>
+            <p>단일 이미지</p>
+            <form method="post" action="fpage/send/img" enctype="multipart/form-data" onsubmit="return sendFile()">
+                <input type="file" id="fimg" name="fimg" value="" accept="image/png, image/jpeg">
+                <input type="text" name="tt" id="tt">
+                <input type="submit" value="전송">
+            </form>    
+        </div>
+        <br />
+        <div>
+            <p style="display: inline-block;">다중 이미지</p>
+            <button id="plusSet" onclick="addInput()">Plus</button>
+            <form action="fpage/send/images" method="post" name="fimages" id="fimagesform" enctype="multipart/form-data" onsubmit="return sendFiles()">
+                <input type="submit" value="전송">
+                <div id="fimages"></div>
+            </form>
+        </div>
+    </div>
+    <script>
+        let sendFile = () => {
+            let fileCheck = document.getElementById('fimg').value;
+            if(fileCheck == undefined || fileCheck == null || fileCheck == ""){
+                alert('파일을 선택해주세요');
+                return false;
+            }
+            return true;
+        };
+
+        let addInput = () => {
+            let imagesForm = document.getElementById('fimages');
+            let imagesInput = document.createElement("INPUT");
+            imagesInput.setAttribute("type", "file");
+            imagesInput.setAttribute("name", "fimages");
+            imagesInput.setAttribute("class", "fimages");
+            imagesInput.setAttribute("accept", "image/png, image/jpeg");
+            imagesForm.appendChild(imagesInput);
+        }
+        let sendFiles = () => {
+            let fileCheck = document.getElementById('fimagesform').elements.length;            
+            if(fileCheck < 2) alert('하나이상의 파일을 선택해주세요');
+            else{
+                let imagesInput = document.getElementsByClassName('fimages');
+                for(let i =0; i < imagesInput.length; i++){
+                    if(imagesInput[i].files.length == 0){
+                        alert('비어있는 창이있습니다');
+                        return false;
+                    }
+                }
+                return true;
+            }
+            return false;
+        };
+    </script>
+</body>
+</html>
