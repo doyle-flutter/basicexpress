@@ -6,3 +6,9 @@ html(lang="ko")
         meta(http-equiv="X-UA-Compatible", content="ie=edge")
         title login
     body
+
+    form(action="/login", method="post")
+        input(type="submit", value="Login")
+    
+    script.
+        sessionStorage.setItem('id','login2')

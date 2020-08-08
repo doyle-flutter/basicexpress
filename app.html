@@ -10,7 +10,29 @@
 <body>
     <nav>
         <div class="navwrapper">
-            <div><a href="/login">Login</a></div>
+            <div id="loginCheck"></div>
+            <script>
+                let loginCheck = document.getElementById('loginCheck');
+                let sessionCheck = sessionStorage.getItem('id');
+                let loginTag;
+                if( sessionCheck == null || sessionCheck == undefined){
+                    loginTag = document.createElement("A");
+                    loginTag.setAttribute("href", "/login");
+                    loginTag.innerText = "login";
+                }
+                else{
+                    loginTag = document.createElement("FORM");
+                    loginTag.setAttribute("action", "/logout");
+                    loginTag.setAttribute("method", "post");
+                    loginTag.setAttribute("onsubmit", "return sessionStorage.clear();");
+                    let loginInput = document.createElement("INPUT");
+                    loginInput.setAttribute('type',"submit");
+                    loginInput.setAttribute('value',"logout");
+                    loginTag.appendChild(loginInput);
+                }
+                loginCheck.appendChild(loginTag);
+                
+            </script>
         </div>
     </nav>
     <main>
