@@ -23,6 +23,12 @@ io.on('connection', (socket) => {
       console.log(data);
       io.emit('welcome', {'title' : "Socket TITLE", 'des':'Socket DATA'});
     });
+
+    socket.on('chats',(data) => {
+      console.log(data);
+      // io.emit('chatsYou',{'title':'', 'des':data['des']});
+      socket.broadcast.emit('chatsYou',{'title':'', 'des':data['des']});
+    });
 });
 
 // Cross-Origin Resource Sharing

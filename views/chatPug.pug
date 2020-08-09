@@ -8,27 +8,53 @@ html(lang="ko")
         style
             include ../styles/chatcss.css
     body
-        div
-            p(id="userId")
-        div(id="chatTxt")
+        nav
+            div(class="navwrapper")
+                div
+                    a(id="userId")
+                    a(href="/" style="margin-left: 20px") HOME
+        div(id="chatTxt" class="chatTxt")
+            div(class="chats" id="chats")
+                p(class="chatsMe" id="chatsMe") 안녕
+                p(class="chatsYou" id="chatsYou") 안녕2
         div(class="chatInputTxt")
-            form(action="/chat", method="post" onsubmit="return false" id="chatForm")
-                input(type="text", name="text" class="txtInput")
-                input(type="submit", value="전송" class="txtInputSubmit")
+            input(type="text", name="text" class="txtInput" id="txtInput")
+            button(class="txtInputSubmit" id="chatForm") 전송
+
         script(src="/socket.io/socket.io.js")
         script.
             window.onload = () => {
                 let id = sessionStorage.getItem('id');
                 let userId = document.getElementById('userId');
+
+                let chats = document.getElementById('chats');
+
+                let txtInput = document.getElementById('txtInput');
+
                 const socket = io('ws://192.168.0.2:3000');
+                socket.on('chatsYou', (data) => {
+                    let txt = document.createElement("P");
+                    txt.setAttribute('class',"chatsYou");
+                    txt.innerText = data['des'];
+                    chats.appendChild(txt);
+                    return;
+                });
+
+
                 if(id == null) userId.innerText = "로그인이 필요합니다";
-                else userId.innerText = id;
+                else userId.innerText = `USER ID : ${id}`;
+                
                 let chatBtn = document.getElementById('chatForm');
-                chatBtn.onsubmit = () => {
+                chatBtn.onclick = () => {
+                    if(id == null) return;
                     console.log(id);
-                    socket.emit('open', "EOPEOPEOP");
-                    if(id == null) return false;
-                    return false;
+                    socket.emit('chats', {"id":"basic", "des":txtInput.value});
+                    let txt = document.createElement("P");
+                    txt.setAttribute('class',"chatsMe");
+                    txt.innerText = txtInput.value;
+                    chats.appendChild(txt);
+                    txtInput.value = "";
+                    return;
                 }
             }
         
