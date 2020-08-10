@@ -4,50 +4,52 @@ const express = require('express'),
     mysql = require('../sql.js'),
     UseSQL = require('../usesql.js');
 
-// read all
 router.get('/', (req, res) => {
     conn.query(mysql.readAllSQL(), (err, results) => {
-        if(err) return res.json(false);
-        return res.json(results);
+        if(err) res.json("request err!");
+        // res.json(results);
+        res.render('../views/sqlpug.pug',{data:results});
     });
 });
-
-// read couter
 router.get('/:counter', (req, res) => {
     let counter = req.params['counter'];
+    if(counter == undefined) return res.json("request err!");
     conn.query(mysql.readLimitSQL({counter}) , (err, results) => {
-        if(err) return res.json(false);
-        return res.json(results);
+        if(err) res.json(false);
+        res.json(results);
     });
 });
-
 router.post('/create/data', (req,res) => {
     let token = req.headers['token'];
-    console.log(token);
     let title = req.body['title'];
     let des = req.body['des'];
-    console.log(title);
-    console.log(des);
-    if(token === undefined) return res.json(false);
-    if(title === undefined) return res.json(false);
-    if(des === undefined) return res.json(false);
-    console.log(title);
-    console.log(des);
+    if(token === undefined || title === undefined || des === undefined) return res.json("request err!");
     conn.query(mysql.createSQL(), UseSQL.createValue({title: title, des: des}),(err, results) => {
-        if(err) return res.json(false);
-        console.log(results);
+        if(err) res.json('sql err!');
         conn.query(mysql.readAllSQL(), (err, results) => {
-            if(err) return res.json(false);
-            return res.json(results);
+            if(err) res.json(false);
+            res.json(results);
         });
     });
 });
-
 router.post('/update/:id', (req,res) => {
-    let targetId = req.params['id'];
-    if(targetId == undefined) return res.json(false);
-    conn.query(mysql.updateTargetSQL())
-    
+    let token = req.headers['token'];
+    let id = req.params['id'];
+    let title = req.body['title'];
+    let des = req.body['des'];
+    if(token == undefined || id == undefined || title == undefined || des == undefined) return res.json("request err!");
+    conn.query(mysql.updateTargetSQL(),UseSQL.updateValue({title:title, des:des, id:id}),(err,result) =>{
+        if(err) res.json('sql err!');
+        res.json(result['protocol41']);
+    })
 });
-
+router.post('/delete/:id',(req, res) => {
+    let token = req.headers['token'];
+    let id = req.params['id'];
+    if(token === undefined || id === undefined) return res.json("request err!");
+    conn.query(mysql.deleteSQL(), UseSQL.deleteValue({id:id}), (err,result) => {
+        if(err) res.json('sql err!');
+        res.json(result['protocol41']);
+    });
+});
 module.exports = router;

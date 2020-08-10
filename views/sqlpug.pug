@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+html(lang="ko")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        meta(http-equiv="X-UA-Compatible", content="ie=edge")
+        title SQLS
+        style.
+            form{
+                display:inline;
+            }
+    body
+    script.
+        let delbtn = ({id}) => fetch(
+            `/sqls/delete/${id}`,
+            {
+                method: 'POST',
+                mode: 'cors', // TEST
+                headers: {'token': 'tokenn'},
+            }
+        )
+        .then((data) => {
+            if(data['status'] == 200){
+                location.reload();
+                return;
+            }
+            else{
+                alert("server ERR!");
+            }
+        })
+        .catch(error => alert("server ERR!"));
+
+        let updatebtn = ({id, title, des}) => fetch(
+            `/sqls/update/${id}`,
+            {
+                method: 'POST',
+                mode: 'cors', // TEST
+                headers: {
+                    'token': 'tokenn',
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({title, des})
+            }
+        )
+        .then((data) => {
+            if(data['status'] == 200){
+                location.reload();
+                return;
+            }
+            else{
+                alert("server ERR!");
+            }
+        })
+        .catch(error => alert("server ERR!"));
+
+        let createbtn = ({title, des}) => fetch(
+            `/sqls/create/data`,
+            {
+                method: 'POST',
+                mode: 'cors', // TEST
+                headers: {
+                    'token': 'tokenn',
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({title, des})
+            }
+        )
+        .then((data) => {
+            if(data['status'] == 200){
+                location.reload();
+                return;
+            }
+            else{
+                alert("server ERR!");
+            }
+        })
+        .catch(error => alert("server ERR!"));
+    
+    button(onclick = `createbtn({title:'newTitle', des:'newDes'})`) 데이터 추가
+
+    each i in data
+        p #{i['id']}  #{i['title']}  #{i['des']}
+        button(onclick = `updatebtn({id : ${i['id']}, title : 'titleupdate', des : 'desupdate'})`) 수정
+        button(onclick = `delbtn({ id:${i['id']} })`) 삭제
+    
