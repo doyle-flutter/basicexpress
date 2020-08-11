@@ -37,25 +37,37 @@ html(lang="ko")
                     txt.setAttribute('class',"chatsYou");
                     txt.innerText = data['des'];
                     chats.appendChild(txt);
+                    window.scrollBy(0, 100);
                     return;
                 });
 
-
                 if(id == null) userId.innerText = "로그인이 필요합니다";
                 else userId.innerText = `USER ID : ${id}`;
-                
-                let chatBtn = document.getElementById('chatForm');
-                chatBtn.onclick = () => {
+
+                function sendFunc(){
                     if(id == null) return;
-                    console.log(id);
+                    if(txtInput.value == "") return;
                     socket.emit('chats', {"id":"basic", "des":txtInput.value});
                     let txt = document.createElement("P");
                     txt.setAttribute('class',"chatsMe");
                     txt.innerText = txtInput.value;
                     chats.appendChild(txt);
                     txtInput.value = "";
+                    window.scrollBy(0, 100);
                     return;
                 }
+                txtInput.addEventListener("keydown", () => {
+                    if(event.keyCode == 13){
+                        return sendFunc();
+                    };
+                });
+                
+                let chatBtn = document.getElementById('chatForm');
+                chatBtn.onclick = () => sendFunc();
+
+                
+
+                
             }
         
 

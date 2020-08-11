@@ -8,6 +8,7 @@ router.get('/', (req, res) => {
     conn.query(mysql.readAllSQL(), (err, results) => {
         if(err) res.json("request err!");
         // res.json(results);
+        if(req.headers['type'] === "json") return res.json(results);
         res.render('../views/sqlpug.pug',{data:results});
     });
 });
@@ -16,7 +17,8 @@ router.get('/:counter', (req, res) => {
     if(counter == undefined) return res.json("request err!");
     conn.query(mysql.readLimitSQL({counter}) , (err, results) => {
         if(err) res.json(false);
-        res.json(results);
+        if(req.headers['type'] === "json") return res.json(results);
+        res.send(results);
     });
 });
 router.post('/create/data', (req,res) => {

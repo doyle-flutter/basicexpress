@@ -1,6 +1,7 @@
 const express = require('express'),
     path = require('path'),
     multer  = require('multer'),
+    fs = require('fs'),
     storage = multer.diskStorage({
         destination: function(req, file ,callback){
             callback(null, path.resolve(__dirname , '../files'));
@@ -23,19 +24,22 @@ router.get('/', (req,res) => res.sendFile(path.join(__dirname, '../views/filevie
 router.post('/send/img',upload.single('fimg'), (req,res) => {
     if(req.file == undefined) res.redirect('/fpage');
     req.session.fileCheck = false;
-    console.log(req.session.fileCheck);
-    res.redirect('/fpage/success');
+    res.redirect('/fpage/success'); // token :
+    return;
 });
 router.post('/send/images',upload.array("fimages"), (req,res) => {
     console.log(req.files);
     res.send('files');
 })
 router.get('/success', (req,res) => {
-    if(req.session.fileCheck) res.redirect('/');
+    if(req.session.fileCheck){
+        res.redirect('/');
+        return;
+    }
     else{
         req.session.destroy();
-        console.log(path.resolve(__dirname));
-        res.sendfile(path.resolve(__dirname, '../views/fileuploadsuccess.html'));
+        res.sendFile(path.join(__dirname, '../views/fileuploadsuccess.html'));
+        return;
     }
 })
 
