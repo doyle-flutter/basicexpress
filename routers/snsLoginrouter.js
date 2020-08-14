@@ -21,7 +21,7 @@ router.get('/logout', async (req,res) => {
         'https://kapi.kakao.com/v1/user/unlink',
         {
             headers : {
-                'Authorization': `Bearer FmaMxIA7HqcNgHbxOxvtblkv_kWu3oYJ4eWkQgo9dNsAAAFz6yUDnA`,
+                'Authorization': `Bearer ${key}`,
             },
         },
     )
