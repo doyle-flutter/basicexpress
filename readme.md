@@ -21,7 +21,7 @@
 - [x] socket : 단순 채팅
 - [ ] debug : morgan 패키지 사용, 다양한 환경에 대응하기 위해(작성중...)
 - [ ] FCM : (예정)
-- [ ] SNS 로그인 : 카카오 진행중
+- [x] SNS 로그인 : 카카오 진행중
 - [ ] https : (예정) 개발자 인증서를 통해 구현할 예정입니다  
 - [ ] 배포 : (예정) AWS, GCP, Firebase, cafe24 를 통해 배포 할 예정입니다
 - [x] 사용 : Flutter(플러터) 를 통해 서버와 연결(https://github.com/doyle-flutter/basicexpresswithflutter)
