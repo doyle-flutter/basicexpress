@@ -7,6 +7,7 @@ var express = require('express'),
   renderRouter = require('./routers/renderhtml.js'),
   chatPugRouter = require('./routers/chatPug.js'),
   loginRouter = require('./routers/loginrouter.js'),
+  snsLoginRouter = require('./routers/snsLoginrouter.js'),
   logoutRouter = require('./routers/logoutrouter.js'),
   conn = require('./config/sqlinfo.js'),
   sqlconn = conn.connect(),
@@ -70,6 +71,7 @@ app.use('/fpage', fileRouter);
 app.use('/renderHtml', renderRouter);
 app.use('/login', loginRouter);
 app.use('/logout', logoutRouter);
+app.use('/auth', snsLoginRouter);
 app.use('/chatPug', chatPugRouter);
 
 
