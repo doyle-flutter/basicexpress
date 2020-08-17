@@ -31,7 +31,7 @@ router.get('/logout', async (req,res) => {
     });
     let r = await d(ss);
     console.log(r);
-    res.json(r);
+    res.render('../views/kakaoLoginPug.pug', {at : null, rt:null});
 })
 
 module.exports = router;
