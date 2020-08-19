@@ -17,7 +17,7 @@ router.post('/token/save',(req,res) => {
 
 router.post('/send', async (req,res) => {
     if(req.headers['token'] == undefined) res.json(false);
-    let from = req.body['from'];
+    let from = req.body['token'];
     let msgTitle = req.body['title'];
     let msgBody = req.body['body'];
     let iosToken = "";
