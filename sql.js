@@ -10,6 +10,7 @@ class SQL{
 
     readAllSQL = () => `SELECT * FROM ${this.tableName}`;
     readLimitSQL = ({counter}) => `SELECT * FROM ${this.tableName} LIMIT ${counter}`
+    readTargetSQL = ({id}) => `SELECT * FROM ${this.tableName} WHERE id = ${id}`
     
     updateTargetSQL = () => `UPDATE ${this.tableName} SET ${this.COLUMN_TITLE}=?, ${this.COLUMN_DES}=? WHERE id=? `;
     deleteSQL = () => `DELETE FROM ${this.tableName} WHERE id=?`;

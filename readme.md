@@ -3,9 +3,9 @@
 코드 구성 및 구현 로직을 차근히 봐주세요  
    
 ## 일정
-- 8/19 : GeoLocation 위치 계산
-- 8/18 (1) : https 개발자 인증서 & webRTC 구현
-- 8/17 (1) : FCM 코드 배포
+- 8/20 : GraphQL & MySQL(mysql2/promise)
+- 8/18 : https 개발자 인증서 & webRTC 구현
+- 8/17 : FCM 코드 배포
 - 8/13 카카오 로그인 및 로그아웃
 - 8/12 Flutter 연결에 중점을 두고 있습니다  
 - 8/11 socket 채팅 보완, Flutter 적용 부분 일부 수정  
@@ -26,9 +26,8 @@
 - [x] SNS 로그인 : 카카오 진행중
 - [x] https : 개발용 인증서 필요 (openSSL) 
 - [x] webRTC : 안드로이드 구현
-- [ ] Geolocation : 위치(위경도 - 도분초)
+- [x] GraphQL :  GraphSQL & MySQL(mysql2) / express-graphQL 사용 가능
 - [ ] 오디오 또는 비디오 스트리밍 : (예정)
-- [ ] GraphQL : (예정) express-graphQL  
 - [ ] 예외 처리 : (예정)
 - [ ] 배포 : (예정) AWS, GCP, Firebase, cafe24 를 통해 배포 할 예정입니다
 

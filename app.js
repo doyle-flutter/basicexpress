@@ -8,21 +8,25 @@ var express = require('express'),
   https = require('https').createServer({key: key, cert: cert }, app),
   io = require('socket.io')(https),
   iochat = require('socket.io')(http),
-  sqlRouter = require('./routers/sqlrouter.js'),
+  conn = require('./config/sqlinfo.js'),
+  sqlconn = conn.sqlInfo.connect(),
+  session = require('express-session'),
+  pug = require('pug'),
+  cors = require('cors'),
+  logger = require('morgan'),
+  port = process.env.PORT || 3000;
+
+// Router Files
+const sqlRouter = require('./routers/sqlrouter.js'),
   fileRouter = require('./routers/filerouter.js'),
   renderRouter = require('./routers/renderhtml.js'),
   chatPugRouter = require('./routers/chatPug.js'),
   loginRouter = require('./routers/loginrouter.js'),
   snsLoginRouter = require('./routers/snsLoginrouter.js'),
   logoutRouter = require('./routers/logoutrouter.js'),
+  airtableRouter = require('./routers/airtablerouter.js'),
   fcmRouter = require('./routers/fcmRouter.js'),
-  conn = require('./config/sqlinfo.js'),
-  sqlconn = conn.connect(),
-  session = require('express-session'),
-  pug = require('pug'),
-  cors = require('cors'),
-  logger = require('morgan'),
-  port = process.env.PORT || 3000;
+  graphqlRouter = require('./routers/graphqlrouter.js');
 
 // Cross-Origin Resource Sharing
 app.use(cors());
@@ -43,7 +47,8 @@ app.use(express.static(path.join(__dirname,"/files")));
 app.use(express.static(path.join(__dirname,"/styles")));
 app.use(express.static(path.join(__dirname,"/views")));
 
-app.use(logger('dev'));// short || common || combined
+// Debug(short || common || combined)
+app.use(logger('dev'));
 
 // PUG Engin
 app.set('view engine', 'pug');
@@ -54,7 +59,6 @@ app.use(express.static(path.join(__dirname, 'html')));
 http.listen(port,(console.log(`${port} HTTP`)));
 https.listen(443,(console.log("443 HTTPS")));
 
-
 app.get('*', (req,res,next) => {
     res.header("Cache-Control", "no-cache, no-store, must-revalidate");
     res.header("Pragma", "no-cache");   
@@ -62,6 +66,7 @@ app.get('*', (req,res,next) => {
     next();
 });
 
+// Routers
 app.get('/', (req,res) => res.sendFile(path.join(__dirname, '/app.html')));
 app.use('/sqls', sqlRouter);
 app.use('/fpage', fileRouter);
@@ -71,16 +76,18 @@ app.use('/logout', logoutRouter);
 app.use('/auth', snsLoginRouter);
 app.use('/fcm', fcmRouter);
 app.use('/chatPug', chatPugRouter);
-app.get('/rtc', function(req, res){
-  return res.sendFile(path.join(__dirname,'./views/rtc.html'));
-});
+app.use('/airtabledb', airtableRouter);
+app.use('/graphqlserver', graphqlRouter);
+app.get('/rtc', (req, res) => res.sendFile(path.join(__dirname,'./views/rtc.html')));
 
+// non path
 app.use('*',(req,res, next) => res.json("null"));
 app.use(function(err, req, res, next) {
   console.error(err.stack);
   res.status(500).send('app Something broke!');
 });
 
+// socket IO
 iochat.on('connect', (socket) => {
   console.log("Chat socket Connection");
   socket.on('open', (data) => {
