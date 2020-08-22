@@ -4,7 +4,7 @@ const express = require('express'),
     GraphqlQuery = graphql.graphql,
     {GraphQLSchema,GraphQLObjectType, GraphQLString, GraphQLInt } = graphql,
     // GraphQL 서버 패키지 사용시
-    // {graphqlHTTP} = require('express-graphql'),
+    {graphqlHTTP} = require('express-graphql'),
     mysql2 = require('mysql2/promise'),
     sql = require('../sql.js');
     let connection;
@@ -45,10 +45,10 @@ const schema = new GraphQLSchema({
 });
 
 // Server 사용
-// router.use('/', graphqlHTTP({
-//     schema:schema,
-//     graphiql: true,
-// }));
+router.use('/', graphqlHTTP({
+    schema:schema,
+    graphiql: true,
+}));
 
 router.get('/data', async (req,res) => {
     let reqQuery = req.query['query'];
