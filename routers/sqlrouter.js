@@ -1,6 +1,6 @@
 const express = require('express'),
     router = express.Router(),
-    conn = require('../config/sqlinfo.js'),
+    conn = require('../config/sqlinfo.js').sqlInfo,
     mysql = require('../sql.js'),
     UseSQL = require('../usesql.js');
 

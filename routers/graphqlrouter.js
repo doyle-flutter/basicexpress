@@ -49,10 +49,14 @@ const schema = new GraphQLSchema({
 
 // Server 사용
 // query example : query { hello(targetId:1){ id title } }
-router.use('/', graphqlHTTP({
-    schema:schema,
-    graphiql: true,
+router.use('/',graphqlHTTP((req,res) => {
+    return ({
+        schema:schema,
+        graphiql: true,
+        context:{req,res}
+    });
 }));
+
 
 router.get('/data', async (req,res) => {
     let reqQuery = req.query['query'];
@@ -73,14 +77,5 @@ router.get('/data', async (req,res) => {
     });
 });
 
-// Server 사용
-// query example : query { hello(targetId:1){ id title } }
-router.use('/',graphqlHTTP((req,res) => {
-    return ({
-        schema:schema,
-        graphiql: true,
-        context:{req,res}
-    });
-}));
 
 module.exports = router;
