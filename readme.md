@@ -3,6 +3,7 @@
 코드 구성 및 구현 로직을 차근히 봐주세요  
    
 ## 일정
+- 8/23 : Streaming MP3 안드로이드 및 아이폰 테스트 완료
 - 8/20 : GraphQL & MySQL(mysql2/promise)
 - 8/18 : https 개발자 인증서 & webRTC 구현
 - 8/17 : FCM 코드 배포
@@ -27,7 +28,7 @@
 - [x] https : 개발용 인증서 필요 (openSSL) 
 - [x] webRtc를 이용한 영상 통화,채팅(안드로이드 가능 / IOS 사파리에서 일부 가능)
 - [x] GraphQL :  HTTP(S) - GraphQL & MySQL(mysql2) / express-graphQL & MySQL(mysql2) 둘 다 가능
-- [ ] 오디오 또는 비디오 스트리밍 : (예정)
+- [x] 오디오 또는 비디오 스트리밍 : MP3 안드로이드 및 아이폰 테스트 완료
 - [ ] 예외 처리 : (예정)
 - [ ] 배포 : (예정) AWS, GCP, Firebase, cafe24 를 통해 배포 할 예정입니다
 

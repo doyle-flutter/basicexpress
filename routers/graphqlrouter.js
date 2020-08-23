@@ -35,7 +35,10 @@ const schema = new GraphQLSchema({
                     targetId: { type: GraphQLInt }
                 },
                 type: dType,
-                resolve: async (_,{targetId},__,___) => {
+                resolve: async (_,{targetId},{req},___) => {
+                    console.log(`req : ${req.headers['user-agent']}`);
+                    console.log(`req : ${req.headers['content-type']}`);
+                    console.log(`req : ${req.headers['authorization']}`);
                     let result = await connection.execute(sql.readTargetSQL({id:targetId}));
                     return result[0][0];
                 }
@@ -69,5 +72,15 @@ router.get('/data', async (req,res) => {
         res.json(result);
     });
 });
+
+// Server 사용
+// query example : query { hello(targetId:1){ id title } }
+router.use('/',graphqlHTTP((req,res) => {
+    return ({
+        schema:schema,
+        graphiql: true,
+        context:{req,res}
+    });
+}));
 
 module.exports = router;

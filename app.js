@@ -26,7 +26,8 @@ const sqlRouter = require('./routers/sqlrouter.js'),
   logoutRouter = require('./routers/logoutrouter.js'),
   airtableRouter = require('./routers/airtablerouter.js'),
   fcmRouter = require('./routers/fcmRouter.js'),
-  graphqlRouter = require('./routers/graphqlrouter.js');
+  graphqlRouter = require('./routers/graphqlrouter.js'),
+  streamingRouter = require('./routers/streamingrouter.js');
 
 // Cross-Origin Resource Sharing
 app.use(cors());
@@ -44,6 +45,7 @@ app.use(session({ secret: '!@# 123',resave: false, saveUninitialized: false }));
 // static
 app.use(express.static(path.join(__dirname,"/assets"),  { etag: false } ));
 app.use(express.static(path.join(__dirname,"/files")));
+app.use(express.static(path.join(__dirname,"/sfile")));
 app.use(express.static(path.join(__dirname,"/styles")));
 app.use(express.static(path.join(__dirname,"/views")));
 
@@ -78,6 +80,7 @@ app.use('/fcm', fcmRouter);
 app.use('/chatPug', chatPugRouter);
 app.use('/airtabledb', airtableRouter);
 app.use('/graphqlserver', graphqlRouter);
+app.use('/streamingRouter', streamingRouter);
 app.get('/rtc', (req, res) => res.sendFile(path.join(__dirname,'./views/rtc.html')));
 
 // non path
