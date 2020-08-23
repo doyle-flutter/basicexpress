@@ -45,6 +45,7 @@ const schema = new GraphQLSchema({
 });
 
 // Server 사용
+// query example : query { hello(targetId:1){ id title } }
 router.use('/', graphqlHTTP({
     schema:schema,
     graphiql: true,

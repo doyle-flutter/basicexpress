@@ -25,8 +25,8 @@
 - [x] FCM : 작동 구현
 - [x] SNS 로그인 : 카카오 진행중
 - [x] https : 개발용 인증서 필요 (openSSL) 
-- [x] webRTC : 안드로이드 구현
-- [x] GraphQL :  GraphSQL & MySQL(mysql2) / express-graphQL 사용 가능
+- [x] webRtc를 이용한 영상 통화,채팅(안드로이드 가능 / IOS 사파리에서 일부 가능)
+- [x] GraphQL :  HTTP(S) - GraphQL & MySQL(mysql2) / express-graphQL & MySQL(mysql2) 둘 다 가능
 - [ ] 오디오 또는 비디오 스트리밍 : (예정)
 - [ ] 예외 처리 : (예정)
 - [ ] 배포 : (예정) AWS, GCP, Firebase, cafe24 를 통해 배포 할 예정입니다
