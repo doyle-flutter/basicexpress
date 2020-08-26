@@ -3,6 +3,7 @@
 코드 구성 및 구현 로직을 차근히 봐주세요  
    
 ## 일정
+- 8/26 : multer를 이용한 영상 업로드
 - 8/23 : Streaming MP3 안드로이드 및 아이폰 테스트 완료
 - 8/20 : GraphQL & MySQL(mysql2/promise)
 - 8/18 : https 개발자 인증서 & webRTC 구현
@@ -20,6 +21,7 @@
 - [x] Flutter(플러터)와 서버 연결( https://github.com/doyle-flutter/basicflutter )
 - [x] [DataBase] mysql & class : class를 활용하여 SQL문을 편리하게 사용하여 CURD를 HTML Fetch를 통해 구현하였습니다
 - [x] multer : Form tag & DOM 응용을 통해 단일 이미지 및 여러 이미지 파일을 업로드 할 수 있는 내용을 구현하였습니다  
+- [x] multer+ : 영상 업로드 (WEB / IOS / And 테스트 완료) IOS는 기기로 테스트해야합니다
 - [x] 보안 : 기본 내용을 담고 있습니다
 - [x] session : login || logout을 기능을 통해 HTML in script session 과 express-session을 사용하여 구현하였습니다
 - [x] socket : 단순 채팅
