@@ -45,6 +45,7 @@ app.use(session({ secret: '!@# 123',resave: false, saveUninitialized: false }));
 // static
 app.use(express.static(path.join(__dirname,"/assets"),  { etag: false } ));
 app.use(express.static(path.join(__dirname,"/files")));
+app.use(express.static(path.join(__dirname,"/vfiles")));
 app.use(express.static(path.join(__dirname,"/sfile")));
 app.use(express.static(path.join(__dirname,"/styles")));
 app.use(express.static(path.join(__dirname,"/views")));
