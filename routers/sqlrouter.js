@@ -12,6 +12,15 @@ router.get('/', (req, res) => {
         res.render('../views/sqlpug.pug',{data:results});
     });
 });
+router.get('/targetRead/:id', (req, res) => {
+    let id = req.params['id'];
+    if(id == undefined) return res.json("request err!");
+    conn.query(mysql.readTargetSQL({id}) , (err, results) => {
+        if(err) res.json(false);
+        if(req.headers['type'] === "json") return res.json(results);
+        res.send(results);
+    });
+});
 router.get('/:counter', (req, res) => {
     let counter = req.params['counter'];
     if(counter == undefined) return res.json("request err!");
@@ -21,6 +30,7 @@ router.get('/:counter', (req, res) => {
         res.send(results);
     });
 });
+
 router.post('/create/data', (req,res) => {
     let token = req.headers['token'];
     let title = req.body['title'];

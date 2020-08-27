@@ -25,13 +25,13 @@ nav > div.navwrapper > div{
     font-size: 1rem;
 }
 
-main{
+main > section{
     margin: 10px;
 }
-main > ul{
+main > section > ul{
     margin: 10px;
 }
-main > ul > li{
+main > section > ul > li{
     margin: 10px;
 }
 

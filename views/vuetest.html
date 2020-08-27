@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Vue Test</title>
+    <!-- 개발 버전 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <!-- 상용 버전 -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/vue"></script> -->
+    <!-- 배포시 특정 버전의 빌드 파일 사용 가능 -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/vue@2.6.0"></script> -->
+    <style>
+        #mainLogo{
+            text-align: center;
+            font-size: 0;
+        }
+        .boxBorder{
+            padding: 30px;
+            margin: 30px;
+            border : 2px solid black;
+        }
+        .active{
+            animation-duration: 3s;
+            animation-name: myanim;
+            animation-iteration-count: infinite;
+        }
+        @keyframes myanim {
+            from {
+                opacity: 0.1;
+            }
+
+            to {
+                opacity: 1.0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="mainLogo" v-bind:style='mainLogoCss'>
+        <a href="/"><img src="https://kr.vuejs.org/images/logo.png" alt="VUE.js"></a>
+    </div>
+    <!-- 단순 값 -->
+    <div id="app" class="boxBorder">
+        {{ message }}
+    </div>
+    
+    <!-- 이벤트 -->
+    <div id="app-2" class="boxBorder">
+        <span v-bind:title="message">
+          내 위에 잠시 마우스를 올리면 동적으로 바인딩 된 title을 볼 수 있습니다!
+        </span>
+    </div>
+    
+    <!-- 조건문 -->
+    <!-- v-if 와 v-else-if 또는 v-else 가 바로 뒤에 써야 함-->
+    <div id="app-3" class="boxBorder">
+        <p>#app3.seen = false || true</p>
+        <p v-if="seen">이제 나를 볼 수 있어요</p>
+        <h1 v-else>Oh no 😢</h1>
+        <p>#app3.type = 'A'</p>
+        <div v-if="type === 'A'">
+            A
+        </div>
+        <div v-else-if="type !== 'B'">
+            type !== B
+        </div>
+        <h1 v-else>Oh 'type' is B !</h1>
+    </div>
+
+    <!-- 반복문 -->
+    <div id="app-4" class="boxBorder">
+        <ol>
+          <li v-for="todo in todos">
+            {{ todo.text }}
+          </li>
+        </ol>
+    </div>
+    <!-- 이벤트(클릭) -->
+    <div id="app-5" class="boxBorder">
+        <p>{{ message }}</p>
+        <button v-on:click="reverseMessage">메시지 뒤집기</button>
+    </div>
+
+    <!-- 상태 -->
+    <div id="app-6" class="boxBorder">
+        <p>{{ message }}</p>
+        <input v-model="message">
+    </div>
+
+    <!-- 컴포넌트 -->
+    <div id="app-7" class="boxBorder">
+        <ol>
+          <!--
+            이제 각 todo-item 에 todo 객체를 제공합니다.
+            화면에 나오므로, 각 항목의 컨텐츠는 동적으로 바뀔 수 있습니다.
+            또한 각 구성 요소에 "키"를 제공해야합니다 (나중에 설명 됨).
+           -->
+          <todo-item
+            v-for="item in groceryList"
+            v-bind:todo="item"
+            v-bind:key="item.id"
+          ></todo-item>
+        </ol>
+    </div>
+
+    <!-- 클래스 바인딩 : 클래스 동적 토글을 위해 -->
+    <!-- appClassBinding.active = false; ==> class='static' -->
+    <!-- appClassBinding.active = true; ==> class='static active' -->
+    <div
+        id="appClassBinding"
+        class="static boxBorder"
+        v-bind:class="{ active: isActive, 'text-danger': hasError }">
+        클래스 바인딩
+    </div>
+    <!-- 동적 클래스 바인딩 : 계산된 결과를 바인딩 -->
+    <!-- appClassBinding2.isActive = false; ==> class='' -->
+    <!-- appClassBinding2.isActive = true; ==> class='active' -->
+    <div
+        id="appClassBinding2"
+        class="boxBorder"
+        v-bind:class="classObject">
+        동적 클래스 바인딩
+    </div>
+
+    <div 
+        id="appClassBindingArr"
+        class="boxBorder"
+        v-bind:class="[activeClass, errorClass]">
+        배열 클래스 바인딩
+    </div>
+
+    <div 
+        id="appClassBindingIfArr"
+        class="boxBorder"
+        v-bind:class="[{ active: isActive }, errorClass]">
+        조건부 배열 클래스 바인딩
+    </div>
+
+    <div
+        id="fetch"
+        class="boxBorder">
+        <div v-if="loading">
+            <p v-bind:style="icolor"> {{ info }} </p>
+            <p v-bind:style="pcolor"> {{ pInfo }} </p>
+        </div>
+        <div v-else>
+            <p> Loading... </p>
+        </div>
+    </div>
+
+    <div class="boxBorder">
+        <span v-once>다시는 변경하지 않습니다 : {{ msg }}</span>
+    </div>
+
+    <div 
+        id="home"
+        v-html='txt'
+        class="boxBorder">
+        {{ txt }}
+    </div>
+
+    <div class="boxBorder">
+        <a href="/vues/upgrade">Vue +</a>
+    </div>
+    
+
+    <!-- <script>
+        var fetch = new Vue({
+            el : "#fetch",
+            data () {
+                return {
+                    info: null,
+                    pInfo : null,
+                    pcolor: {
+                        color: 'red',
+                    },
+                    icolor:{
+                        color:'red'
+                    },
+                    loading : false
+                };
+            },
+            mounted () {
+                let url = 'http://127.0.0.1:3000/vues/data';
+                let f1 = fetch(url)
+                    .then(response => {
+                        console.log(response);
+                        return response.json();
+                    })
+                    .then(({data}) => {
+                        this.info = data;
+                        this.icolor.color = 'blue';
+                        return;
+                    })
+                    .catch(error => {
+                        this.info = "ERR !";
+                    })
+                    .finally(() => this.loading = true);
+
+                let f2 = fetch(url,{
+                        method : 'POST',
+                        mode : 'cors',
+                        headers : {
+                            'Content-Type' : 'application/json',
+                            'Token' : 'Express.js with Vue.js'
+                        },
+                        // body: JSON.stringify(null)
+                    }
+                )
+                .then(response => {
+                    console.log(response);
+                    return response.json();
+                })
+                .then(({data}) => {
+                    this.pInfo = data;
+                    this.pcolor.color = 'blue';
+                })
+                .catch(error => {
+                    this.pInfo = "ERR ! ";
+                })
+                .finally(() => this.loading = true);
+
+                return Promise.all([f1, f2]);
+            }
+        });
+
+        // var fetchPost = new Vue({
+        //     el : "#fetchPost",
+        //     data () {
+        //         return {
+        //             pInfo: null,
+        //         };
+        //     },
+        //     async mounted () {
+        //         return fetch(
+        //             'http://192.168.0.2:3000/vuedata',
+        //             {
+        //                 method : 'POST',
+        //                 mode : 'cors',
+        //                 headers : {
+        //                     'Content-Type' : 'application/json',
+        //                     'Token' : 'Express.js with Vue.js'
+        //                 },
+        //                 // body: JSON.stringify(null)
+        //             }
+        //         )
+        //         .then(response => {
+        //             console.log(response);
+        //             return response.json();
+        //         })
+        //         .then(({data}) => this.pInfo = data)
+        //         .catch(error => {
+        //             this.pInfo = "ERR";
+        //         })
+        //         .finally(() => this.loading = false)
+        //     }
+        // });
+    
+
+        var app = new Vue({
+            el: '#app',
+            data: {
+                message: '안녕하세요 Vue!'
+            }
+        });
+        var app2 = new Vue({
+            el: '#app-2',
+            data: {
+                message: '이 페이지는 ' + new Date() + ' 에 로드 되었습니다'
+            }
+        });
+        var app3 = new Vue({
+            el: '#app-3',
+            data: {
+                seen: true,
+                type: 'a'
+            }
+        });
+        var app4 = new Vue({
+            el: '#app-4',
+            data: {
+                todos: [
+                    { text: 'JavaScript 배우기' },
+                    { text: 'Vue 배우기' },
+                    { text: '무언가 멋진 것을 만들기' }
+                ]
+            }
+        });
+        var app5 = new Vue({
+            el: '#app-5',
+            data: {
+                message: '안녕하세요! Vue.js!'
+            },
+            methods: {
+                reverseMessage: () => {
+                    app5.message = app5.message.split('').reverse().join('')
+                }
+                // reverseMessage: function(){
+                //     this.message = this.message.split('').reverse().join('')
+                // }
+            }
+        });
+        var app6 = new Vue({
+            el: '#app-6',
+            data: {
+                message: '안녕하세요 Vue!'
+            }
+        });
+        
+        // 메서드
+        Vue.component('todo-item', {
+            props: ['todo'],
+            template: '<li>{{ todo.text }}</li>'
+        });
+
+        var app7 = new Vue({
+            el: '#app-7',
+            data: {
+                groceryList: [
+                    { id: 0, text: 'Vegetables' },
+                    { id: 1, text: 'Cheese' },
+                    { id: 2, text: 'Whatever else humans are supposed to eat' }
+                ]
+            }
+        });
+        var appClassBinding = new Vue({
+            el: '#appClassBinding',
+            data: {
+                isActive: true,
+                hasError: false
+            }
+        });
+        var appClassBinding2 = new Vue({
+            el: '#appClassBinding2',
+            data: {
+                isActive: true,
+                error: null
+            },
+            computed: {
+                classObject: function () {
+                    return {
+                        active: this.isActive && !this.error,
+                        'text-danger': this.error && this.error.type === 'fatal'
+                    }
+                }
+            }
+        });
+        let appClassBindingArr = new Vue({
+            el : '#appClassBindingArr',
+            data : {
+                activeClass: 'active',
+                errorClass : 'text-denger'
+            }
+        });
+
+        let appClassBindingIfArr = new Vue({
+            el : '#appClassBindingIfArr',
+            data : {
+                isActive: true,
+                errorClass: "text-denger"
+            }
+        });
+    </script> -->
+    <!-- 난독화 : https://obfuscator.io/ -->
+    <script>
+        var _0x3302=['POST','isActive','json','log','\x20에\x20로드\x20되었습니다','Whatever\x20else\x20humans\x20are\x20supposed\x20to\x20eat','join','reverse','Vue\x20배우기','Vegetables','Express.js\x20with\x20Vue.js','cors','error','active','red','이\x20페이지는\x20','#app-3','http://127.0.0.1:3000/vues/data','component','loading','#fetch','all','catch','info','안녕하세요!\x20Vue.js!','finally','todo','split','Cheese','text-denger','#app-6','#appClassBindingArr','icolor','#appClassBinding2','<li>{{\x20todo.text\x20}}</li>','ERR\x20!\x20','pInfo','blue','application/json','color','#app','ERR\x20!','#app-7','message','fatal','안녕하세요\x20Vue!','then','무언가\x20멋진\x20것을\x20만들기','JavaScript\x20배우기','type'];(function(_0x3277c8,_0x33027b){var _0x1fdc97=function(_0x5389e8){while(--_0x5389e8){_0x3277c8['push'](_0x3277c8['shift']());}};_0x1fdc97(++_0x33027b);}(_0x3302,0x138));var _0x1fdc=function(_0x3277c8,_0x33027b){_0x3277c8=_0x3277c8-0x0;var _0x1fdc97=_0x3302[_0x3277c8];return _0x1fdc97;};var fetch=new Vue({'el':_0x1fdc('0x8'),'data'(){return{'info':null,'pInfo':null,'pcolor':{'color':_0x1fdc('0x2')},'icolor':{'color':_0x1fdc('0x2')},'loading':![]};},'mounted'(){let _0x4c23fe=_0x1fdc('0x5'),_0x5db8d8=fetch(_0x4c23fe)[_0x1fdc('0x22')](_0x216531=>{return console[_0x1fdc('0x29')](_0x216531),_0x216531['json']();})[_0x1fdc('0x22')](({data:_0x5460d1})=>{this['info']=_0x5460d1,this[_0x1fdc('0x14')][_0x1fdc('0x1b')]='blue';return;})['catch'](_0xad6efb=>{this[_0x1fdc('0xb')]=_0x1fdc('0x1d');})[_0x1fdc('0xd')](()=>this[_0x1fdc('0x7')]=!![]),_0x1eda89=fetch(_0x4c23fe,{'method':_0x1fdc('0x26'),'mode':_0x1fdc('0x31'),'headers':{'Content-Type':_0x1fdc('0x1a'),'Token':_0x1fdc('0x30')}})[_0x1fdc('0x22')](_0x450a66=>{return console[_0x1fdc('0x29')](_0x450a66),_0x450a66[_0x1fdc('0x28')]();})[_0x1fdc('0x22')](({data:_0x4e1ff4})=>{this[_0x1fdc('0x18')]=_0x4e1ff4,this['pcolor'][_0x1fdc('0x1b')]=_0x1fdc('0x19');})[_0x1fdc('0xa')](_0x2a78aa=>{this[_0x1fdc('0x18')]=_0x1fdc('0x17');})[_0x1fdc('0xd')](()=>this[_0x1fdc('0x7')]=!![]);return Promise[_0x1fdc('0x9')]([_0x5db8d8,_0x1eda89]);}}),app=new Vue({'el':_0x1fdc('0x1c'),'data':{'message':_0x1fdc('0x21')}}),app2=new Vue({'el':'#app-2','data':{'message':_0x1fdc('0x3')+new Date()+_0x1fdc('0x2a')}}),app3=new Vue({'el':_0x1fdc('0x4'),'data':{'seen':!![],'type':'a'}}),app4=new Vue({'el':'#app-4','data':{'todos':[{'text':_0x1fdc('0x24')},{'text':_0x1fdc('0x2e')},{'text':_0x1fdc('0x23')}]}}),app5=new Vue({'el':'#app-5','data':{'message':_0x1fdc('0xc')},'methods':{'reverseMessage':()=>{app5['message']=app5[_0x1fdc('0x1f')][_0x1fdc('0xf')]('')[_0x1fdc('0x2d')]()[_0x1fdc('0x2c')]('');}}}),app6=new Vue({'el':_0x1fdc('0x12'),'data':{'message':_0x1fdc('0x21')}});Vue[_0x1fdc('0x6')]('todo-item',{'props':[_0x1fdc('0xe')],'template':_0x1fdc('0x16')});var app7=new Vue({'el':_0x1fdc('0x1e'),'data':{'groceryList':[{'id':0x0,'text':_0x1fdc('0x2f')},{'id':0x1,'text':_0x1fdc('0x10')},{'id':0x2,'text':_0x1fdc('0x2b')}]}}),appClassBinding=new Vue({'el':'#appClassBinding','data':{'isActive':!![],'hasError':![]}}),appClassBinding2=new Vue({'el':_0x1fdc('0x15'),'data':{'isActive':!![],'error':null},'computed':{'classObject':function(){return{'active':this[_0x1fdc('0x27')]&&!this[_0x1fdc('0x0')],'text-danger':this['error']&&this[_0x1fdc('0x0')][_0x1fdc('0x25')]===_0x1fdc('0x20')};}}});let appClassBindingArr=new Vue({'el':_0x1fdc('0x13'),'data':{'activeClass':_0x1fdc('0x1'),'errorClass':_0x1fdc('0x11')}}),appClassBindingIfArr=new Vue({'el':'#appClassBindingIfArr','data':{'isActive':!![],'errorClass':_0x1fdc('0x11')}});
+    </script>
+    <script src="/js/vuetagcomponents.js"></script>
+</body>
+</html>

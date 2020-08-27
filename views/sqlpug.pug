@@ -79,7 +79,8 @@ html(lang="ko")
     button(onclick = `createbtn({title:'newTitle', des:'newDes'})`) 데이터 추가
 
     each i in data
-        p #{i['id']}  #{i['title']}  #{i['des']}
+        a(href=`/sqls/targetRead/${i['id']}`)
+            p #{i['id']}  #{i['title']}  #{i['des']}
         button(onclick = `updatebtn({id : ${i['id']}, title : 'titleupdate', des : 'desupdate'})`) 수정
         button(onclick = `delbtn({ id:${i['id']} })`) 삭제
     

@@ -18,7 +18,7 @@
                 if( sessionCheck == null || sessionCheck == undefined){
                     loginTag = document.createElement("A");
                     loginTag.setAttribute("href", "/login");
-                    loginTag.innerText = "login";
+                    loginTag.innerText = "login(session)";
                 }
                 else{
                     loginTag = document.createElement("FORM");
@@ -36,20 +36,41 @@
         </div>
     </nav>
     <main>
-        <h1>Express & Socket.io</h1>
-        <ul>
-            <li><a href="/fpage">SEND File Page</a></li>
-            <li><a href="/sqls">MySQL CRUD Page</a>
-                <ul style="padding-left: 20px;">
-                    <li><a href="/sqls/1">SQL Data Limit 1</a></li>
-                    <li><a href="/sqls/2">SQL Data Limit 2</a></li>
-                    <li><a href="/sqls/3">SQL Data Limit 3</a></li>
-                </ul>
-            </li>
-            <li><a href="/renderHtml">PUG Render Page</a></li>
-            <li><a href="/chatPug">PUG Render Chat Page</a></li>
-        </ul>
-        <div style="height: 1000px; background-color: red;"></div>
+        <section>
+            <h1>Express & Socket.io</h1>
+            <ul>
+                <li><a href="/chatPug">PUG Render Chat Page</a></li>
+            </ul>
+        </section>
+        <section>
+            <h1>Express & Multer(Image / Video)</h1>
+            <ul>
+                <li><a href="/fpage">SEND File Page</a></li>
+                <li><a href="/fpage/videos">SEND Video Page</a></li>
+            </ul>
+        </section>
+        <section>
+            <h1>Express & MySQL</h1>
+            <ul>
+                <li><a href="/sqls">MySQL CRUD Page</a>
+                    <ul style="padding-left: 20px;">
+                        <li><a href="/sqls/1">SQL Data Limit 1</a></li>
+                        <li><a href="/sqls/2">SQL Data Limit 2</a></li>
+                        <li><a href="/sqls/3">SQL Data Limit 3</a></li>
+                    </ul>
+                </li>
+                <li><a href="/renderHtml">PUG Render Page</a></li>
+            </ul>
+        </section>
+        <section>
+            <h1>Express & Vue.js</h1>
+            <ul>
+                <li><a href="/vues">Move Page</a></li>
+            </ul>
+        </section>
+        <section>
+            <div style="height: 1000px; background-color: red;"></div>
+        </section>
     </main>
     <script src="/socket.io/socket.io.js"></script>
     <script>

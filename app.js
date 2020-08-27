@@ -27,6 +27,7 @@ const sqlRouter = require('./routers/sqlrouter.js'),
   airtableRouter = require('./routers/airtablerouter.js'),
   fcmRouter = require('./routers/fcmRouter.js'),
   graphqlRouter = require('./routers/graphqlrouter.js'),
+  vueRouter = require('./routers/vuerouter.js'),
   streamingRouter = require('./routers/streamingrouter.js');
 
 // Cross-Origin Resource Sharing
@@ -71,6 +72,7 @@ app.get('*', (req,res,next) => {
 
 // Routers
 app.get('/', (req,res) => res.sendFile(path.join(__dirname, '/app.html')));
+app.use('/vues',vueRouter);
 app.use('/sqls', sqlRouter);
 app.use('/fpage', fileRouter);
 app.use('/renderHtml', renderRouter);

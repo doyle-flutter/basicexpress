@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Vue+</title>
+</head>
+<body>
+    <nav>
+        <div id="vue-nav" v-bind:style='wrapperCss'>
+            <div v-bind:style='contentsCss'> 
+                <div v-bind:style='backBtnCss' v-on:click='navBack'>[Vue Home]</div>
+                <div v-bind:style='navTitleCss'>  {{ title }} </div>
+            </div>
+        </div>
+    </nav>
+    <div id="app">
+        {{ id }}
+    </div>
+    <div 
+        id="home"
+        v-html='txt'>
+        {{ txt }}
+    </div>
+    <main>
+        <div id="mainContents">
+            <ul v-if='dbs!=null'>
+                <li v-for='item in dbs'>
+                    <a v-bind:href='"/sqls/targetRead/"+item.id'>{{ item.title }}</a>
+                </li>
+            </ul>
+            <p v-else>Loading...</p>
+        </div>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script>
+        let app = new Vue({
+            el:"#app",
+            data(){
+                return {id:123}
+            }
+        });
+
+        let mainContents = new Vue({
+            el: "#mainContents",
+            data(){
+                return {
+                    dbs : null,
+                };
+            },
+            mounted(){
+                fetch('http://192.168.0.2:3000/sqls/',
+                {headers:{'type':"json"}})
+                    .then((res) => res.json())
+                    .then((data) => this.dbs = data);
+            }
+        });
+    </script>
+    <script src="/js/vuenavcomponents.js"></script>
+    <script src="/js/vuetagcomponents.js"></script>
+</body>
+</html>
