@@ -89,6 +89,7 @@ app.get('*', (req,res,next) => {
 
 // Routers
 app.get('/', (req,res) => res.sendFile(path.join(__dirname, '/app.html')));
+app.get('/sockets', (req,res) => res.sendFile(path.join(__dirname, '/sockets.html')));
 app.use('/vues',vueRouter);
 app.use('/sqls', sqlRouter);
 app.use('/mongo', mongoRouter);
@@ -114,29 +115,37 @@ app.use(function(err, req, res, next) {
 
 // socket IO
 iochat.on('connect', (socket) => {
-  console.log("Chat socket Connection");
-  socket.on('open', (data) => {
-    console.log(data);
-    iochat.emit('welcome', {'title' : "Socket TITLE", 'des':'Socket DATA'});
-  });
-
-  socket.on('chats',(data) => {
-    console.log(data);
-    // io.emit('chatsYou',{'title':'', 'des':data['des']});
-    socket.broadcast.emit('chatsYou',{'title':'', 'des':data['des']});
-  });
-
-
+  socket.on('open', (data) => iochat.emit('welcome', {'title' : "Socket TITLE", 'des':'Socket DATA'}));
+  socket.on('chats',(data) => socket.broadcast.emit('chatsYou',{'title':'', 'des':data['des']}));
+  
   // Flask 서버와 소켓 통신
   socket.on('his',(data) => console.log(data));
-  socket.on('repy', (data) => {
-    console.log(data);
-    iochat.emit('hiflask', data['key'])
+  socket.on('repy', (data) => iochat.emit('hiflask', data['key']));
+
+  // [ 소켓 구분 - 서버]
+  // (1) 서버가 모두에게 발송 : 브로드 캐스트
+  // - 연결하였을 때 (임의의 이벤트로) 보낼 수 있음 : 연결 고정 이벤트명 'connect'
+  // - 연결 후 임의(3초 후) 발송
+  setTimeout(() => iochat.emit('socket1', '(1) 브로드 캐스트 - 3초 후 임의 발송'), 3000);
+
+  // (3) 서버에 보낸 쪽을 제외하고 모두에게 발송 : 브로드캐스트
+  socket.on('only', (data) => socket.broadcast.emit('onlyEmit', data['message']));
+});
+
+  // (2) 서버가 특정 집단만 수신 / 발송 : 네임스페이스 또는 룸
+  // (2-1) NameSpace
+iochat.of('/soc2').on('connect',(nSocket) => {
+  nSocket.on('socket2On', (nData) => {
+    iochat.of('/soc2').emit('socket2Emit', `특정 집단만 수신${nData}`)
   });
+  // (2-2) Room(Name 보다 더 세부적인 분류가 필요할 경우)
+  nSocket.on('roomJoin', (data) => {
+    nSocket.join(data['roomId'], () => iochat.of('/soc2').to(data['roomId']).emit('rooms',`ROOM 2-2 : ${data['message']}`));
+  })    
 });
 
 io.on('connection', (socket) => {
-  console.log("Rtc socket Connection");
+  
   function log() {
     let array = ['Message from server:'];
     array.push.apply(array,arguments);
@@ -154,14 +163,13 @@ io.on('connection', (socket) => {
       log('Room ' + room + ' now has ' + numClients + ' client(s)');
       
       if(numClients === 0){
-          console.log('create room!');
+
           socket.join(room);
-          log('Client ID ' + socket.id + ' created room ' + room);
+
           socket.emit('created',room,socket.id);
       }
       else if(numClients===1){
-          console.log('join room!');
-          log('Client Id' + socket.id + 'joined room' + room);
+
           io.sockets.in(room).emit('join',room);
           socket.join(room);
           socket.emit('joined',room,socket.id);
@@ -170,6 +178,7 @@ io.on('connection', (socket) => {
           socket.emit('full',room);
       }
   });
+
 });
 
 // TCP Socekt
@@ -222,5 +231,3 @@ setTimeout(function(){
     // console.log(data.buffer.toString('hex'));
   });
 }, 1000);
-
-// Python Flask Server Socket.io

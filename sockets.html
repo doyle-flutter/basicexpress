@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title class="userId">Sockets</title>
+    <style>
+        *{
+            font-size: 1rem;
+            padding: 0;
+            margin: 0;
+        }
+        div.socketWrapper > p{
+            padding: 20px;
+            height: 1rem;
+            font-size: 1rem;
+            margin: 30px;
+            background-color: #ddd;
+        }
+    </style>
+</head>
+<body>
+
+    <p> 
+        <span>UserID : </span> <span class="userId"></span>
+    </p>
+
+    <div class="socketWrapper">
+        <p id="socket1"></p>
+        <p id="socket2">
+            <button onclick="socket2NameSpace()">(2) 특정 방(네임)으로 발송</button>
+            <span>상태 : </span>
+            <span id="socket2Status">미접속</span>
+        </p>
+        <p id="socket2-2">
+            <button onclick="socket2Room()">(2-2) 특정 방(룸 / 동적)으로 받아온 데이터</button>
+            <span>상태 : </span>
+            <span id="socket2Status2">미접속</span>
+        </p>
+        <p id="socket3">
+            <button onclick="socket3Only()">(3) 서버에 보낸 곳만 제외하고</button>
+            <span>상태 : </span>
+            <span id="socket3Status">미접속</span>
+        </p>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+
+        const userRandomId = Math.floor(Math.random()*10);
+        let userIds = document.getElementsByClassName('userId');
+        for(let v = 0; v < userIds.length; v++){
+            userIds[v].innerText = userRandomId;
+        }
+
+        let socket = io('ws://192.168.0.2:3000/');
+        // [ 소켓 구분 - 클라이언트 ]
+        // (1) 서버가 모두에게 발송 : 브로드 캐스트
+        // - 연결하였을 때 보낼 수 있음 : connect 고정 이벤트명
+        // - 연결 후 임의로 발송
+        socket.on('socket1', (data) => {
+            console.log(`들어온 데이터는 ' ${data} ' 입니다`);
+            document.getElementById('socket1').innerText = data;
+        });
+        
+        // (2) 서버가 특정 집단만 발송 : 네임스페이스 또는 룸
+        // (2-1) NameSpace
+        // *단순 테스트를 위해 모두 접속하지 못하도록 : UserRandomId 2번만 접속 가능
+        const nSocket = io('ws://192.168.0.2:3000/soc'+userRandomId); 
+
+        let socket2NameSpace = () => nSocket.emit('socket2On',`${userRandomId}님이 Socket2 접속하였습니다`)
+        nSocket.on('socket2Emit', (data) => {
+            console.log(data);
+            document.getElementById('socket2').innerText = data;
+        });
+
+        // (2-2) Room(Name 보다 더 세부적인 분류가 필요할 경우)
+        // *단순 테스트를 위해 모두 접속하지 못하도록 : UserRandomId 2번만 접속 가능
+        // Name -> Room
+        let socket2Room = () => nSocket.emit('roomJoin', {roomId: userRandomId, message: `${userRandomId}님이 Socket2-2-ROOM 에 접속하였습니다`});
+
+        nSocket.on('rooms', (data) => {
+            console.log(`ROOM 2-2 안에서 데이터 : ${data}`);
+            document.getElementById('socket2-2').innerText = data;
+        });
+        
+        // (3) 서버에 보낸 쪽을 제외하고 모두에게 발송 : 브로드캐스트
+        let socket3Only = () => {
+            socket.emit('only', {roomId: userRandomId, message: `${userRandomId} 이(가) 보낸 데이터는 ${userRandomId} 을 제외하고 발송`});
+        }
+        socket.on('onlyEmit', (data) => {
+            document.getElementById('socket3').innerText = data;
+        });
+        
+    </script>
+</body>
+</html>

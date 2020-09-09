@@ -3,7 +3,9 @@
 코드 구성 및 구현 로직을 차근히 봐주세요  
    
 ## 일정
-- 9/10 접속 대기 구현 : 보조 서버(Flask) 활용 
+- 9/15 : 접속 대기 구현 - 보조 서버(Flask) 활용 
+- 9/10 : Socket 추가
+- 9/09 : Flaks Socket 클라이언트와 연결
 - 9/07 : TCP Socket & Modbus-TCP Client / Server(./modbusserver.js 참고) 예정
 - 8/27 : Vue.js + Express + MySQL
 - 8/26 : multer를 이용한 영상 업로드
@@ -28,6 +30,7 @@
 - [x] 보안 : 기본 내용을 담고 있습니다
 - [x] session : login || logout을 기능을 통해 HTML in script session 과 express-session을 사용하여 구현하였습니다
 - [x] socket : 단순 채팅
+- [x] socket 기능 추가
 - [x] FCM : 작동 구현
 - [x] SNS 로그인 : 카카오 진행중
 - [x] https : 개발용 인증서 필요 (openSSL) 
@@ -38,15 +41,13 @@
 - [x] Vue.js : Vue.js + Express + MySQL
 - [x] TCP Socket & Modbus-TCP Client / Server
 - [ ] UDP (예정)
-- [x] 보조 서버(Flask) 활용 및 Flutter 연결
-- [ ] Tensorflow & Keras (예정)
+- [x] 보조 서버(Flask)의 Socket 클라이언트와 연결. 단, '보조'는 메인 서버의 기능을 보충하는 역할
+- [ ] 보조 서버(Flask) 활용 및 Flutter 연결. 단, '보조'는 메인 서버의 기능을 보충하는 역할
 - [ ] MongoDB : (예정)
-- 
-- [ ] 배포 : (예정) AWS, GCP, Firebase, cafe24 를 통해 배포 할 예정입니다
+- [ ] Flask - Tensorflow & Keras (예정)
+- [ ] 배포 : AWS, GCP, Firebase, cafe24, 구름IDE 등 (예정)
 
 ## 비고
-빠른 시일내로 작성 중 및 예정 사항에 대해 마무리하겠습니다,  
-이후 Python의 Django/Flask,   
-Ruby on Rails 를 업로드 할 계획입니다.  
-  
+코드는 단순하지만 모든 걸 쏟아낼 레포가 되길 바라며 많은 기능을 추가하겠습니다
+
 감사합니다 :)
