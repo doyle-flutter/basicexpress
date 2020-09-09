@@ -4,7 +4,7 @@ const express = require('express'),
 
 // connect pyserver 
 router.get('/',async (req,res) => {
-    let pythonFlaskIp = 'http://jpy-bnrqw.run.goorm.io';
+    let pythonFlaskIp = 'https://jpy-bnrqw.run.goorm.io';
     try{
         let data = await axios.get(pythonFlaskIp);
         res.json(`Node.js -> Flask : ${data.data.toString()}`);

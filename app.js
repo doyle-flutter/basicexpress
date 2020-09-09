@@ -1,3 +1,9 @@
+// 
+// 
+// NODE.js(Express) - JS
+// 
+// 
+
 var express = require('express'), 
   app = express(),
   fs = require('fs'),
@@ -111,7 +117,7 @@ iochat.on('connect', (socket) => {
   console.log("Chat socket Connection");
   socket.on('open', (data) => {
     console.log(data);
-    io.emit('welcome', {'title' : "Socket TITLE", 'des':'Socket DATA'});
+    iochat.emit('welcome', {'title' : "Socket TITLE", 'des':'Socket DATA'});
   });
 
   socket.on('chats',(data) => {
@@ -120,7 +126,14 @@ iochat.on('connect', (socket) => {
     socket.broadcast.emit('chatsYou',{'title':'', 'des':data['des']});
   });
 
-})
+
+  // Flask 서버와 소켓 통신
+  socket.on('his',(data) => console.log(data));
+  socket.on('repy', (data) => {
+    console.log(data);
+    iochat.emit('hiflask', data['key'])
+  });
+});
 
 io.on('connection', (socket) => {
   console.log("Rtc socket Connection");
@@ -179,7 +192,7 @@ console.log(tcpNet.isIPv6('127.0.0.1'));
 
 // Modbus Client
 const modBusIp = '127.0.0.1'; //LocalHost
-const port = 8502;
+const modBusPort = 8502;
 const modPort = 8000;
 const gy = '255.255.255.0';
 ModbusRTUtcpClient.connectTCP(modBusIp, { port: modPort });
@@ -209,3 +222,5 @@ setTimeout(function(){
     // console.log(data.buffer.toString('hex'));
   });
 }, 1000);
+
+// Python Flask Server Socket.io

@@ -69,15 +69,39 @@
             </ul>
         </section>
         <section>
+            <div>
+                <h2>Flask & Node.js</h2>
+                <p> - 메인서버 Node.js | 보조 서버 Flask </p>
+                <p id="hipy" style="color:grey"> Socket 데이터 송수신 준비 ...</p>
+            </div>
+        </section>
+        <section>
             <div style="height: 1000px; background-color: red;"></div>
         </section>
     </main>
     <script src="/socket.io/socket.io.js"></script>
     <script>
+        // Flask와 연결한 소켓 값 초기화를 위한 함수 : initData
+        var initData = (txt) => setTimeout(() => {
+            pyData.innerText = txt;
+            pyData.style.color = 'blue';
+        }, 5000);
+
+        // 
+        var pyData = document.getElementById('hipy');
+        initData('준비 완료');
+        
+        // [ 웹 클라이언트는 Node.js와 연결 ]
+        // -> Node.js 가 Flaks에서 들어온 소켓 값을 토스하여 
+        // -> 웹 클라이언트가 받는 구조
         const socket = io('ws://192.168.0.2:3000');
         socket.emit('open', {'key':'value'});
         socket.on('welcome', (data) => {
-            // alert(`${data['title']} : ${data['des']}`);
+            socket.on('hiflask', (data) => {
+                pyData.innerText = data;
+                pyData.style.color = 'red';
+                initData('초기화(5초)');
+            });
         });
         
     </script>
