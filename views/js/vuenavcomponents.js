@@ -2,7 +2,7 @@ let naviHeight = '50px';
     let nav = new Vue({
         el : "#vue-nav",
         data: {
-            title:'vuenavcomponents.js에서 생성한 NavigationBar',
+            title:'NavigationBar',
             wrapperCss:{
                 height: naviHeight
             },
@@ -31,3 +31,10 @@ let naviHeight = '50px';
             }
         }
     });
+
+try{
+    james.postMessage('Hi ! webVuw !',"http://192.168.0.2:3000");
+}
+catch(e){
+
+}

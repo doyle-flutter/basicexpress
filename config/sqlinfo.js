@@ -9,6 +9,6 @@ const mysql = require('mysql')
         user: "root",
         password: "abc123456",
         database: "dbs",
-    });;
+    });
 
 module.exports = sqlConn;

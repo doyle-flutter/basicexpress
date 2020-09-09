@@ -4,12 +4,21 @@ var express = require('express'),
   path = require('path'),
   key = fs.readFileSync(path.join(__dirname,'./keys/private.pem')),
   cert = fs.readFileSync(path.join(__dirname, './keys/public.pem')),
+  // HTTP(Hyper Text Transfer Protocol, 하이퍼텍스트 전송 방식)
+  // - C : [Client] -> HTTP -> TCP -> IP -> EtherNet(*)
+  // - S : EtherNet(*) -> IP -> TCP -> HTTP -> [Server]
+  // TCP : 데이터를 작게 나누어서(패킷) 다른쪽으로 옮기고, 이를 다시 조립하여 원래의 데이터로 만드는 규칙
   http = require('http').Server(app),
   https = require('https').createServer({key: key, cert: cert }, app),
+  tcpNet = require('net'),
+  // Modbus Tcp 통신
+  ModbusRTU = require('modbus-serial'),
+  ModbusRTUtcpClient = new ModbusRTU(),
   io = require('socket.io')(https),
   iochat = require('socket.io')(http),
   conn = require('./config/sqlinfo.js'),
   sqlconn = conn.sqlInfo.connect(),
+  mongo = require('./config/mongoosedb.js'),
   session = require('express-session'),
   pug = require('pug'),
   cors = require('cors'),
@@ -18,6 +27,7 @@ var express = require('express'),
 
 // Router Files
 const sqlRouter = require('./routers/sqlrouter.js'),
+  mongoRouter = require('./routers/mongoRouter.js'),
   fileRouter = require('./routers/filerouter.js'),
   renderRouter = require('./routers/renderhtml.js'),
   chatPugRouter = require('./routers/chatPug.js'),
@@ -28,7 +38,8 @@ const sqlRouter = require('./routers/sqlrouter.js'),
   fcmRouter = require('./routers/fcmRouter.js'),
   graphqlRouter = require('./routers/graphqlrouter.js'),
   vueRouter = require('./routers/vuerouter.js'),
-  streamingRouter = require('./routers/streamingrouter.js');
+  streamingRouter = require('./routers/streamingrouter.js'),
+  pyServerRouter = require('./routers/pyserverrouter.js');
 
 // Cross-Origin Resource Sharing
 app.use(cors());
@@ -74,6 +85,7 @@ app.get('*', (req,res,next) => {
 app.get('/', (req,res) => res.sendFile(path.join(__dirname, '/app.html')));
 app.use('/vues',vueRouter);
 app.use('/sqls', sqlRouter);
+app.use('/mongo', mongoRouter);
 app.use('/fpage', fileRouter);
 app.use('/renderHtml', renderRouter);
 app.use('/login', loginRouter);
@@ -84,10 +96,11 @@ app.use('/chatPug', chatPugRouter);
 app.use('/airtabledb', airtableRouter);
 app.use('/graphqlserver', graphqlRouter);
 app.use('/streamingRouter', streamingRouter);
+app.use('/pyserver', pyServerRouter);
 app.get('/rtc', (req, res) => res.sendFile(path.join(__dirname,'./views/rtc.html')));
 
 // non path
-app.use('*',(req,res, next) => res.json("null"));
+app.use('*',(req,res, next) => res.json("404 ! Not Found !"));
 app.use(function(err, req, res, next) {
   console.error(err.stack);
   res.status(500).send('app Something broke!');
@@ -145,3 +158,54 @@ io.on('connection', (socket) => {
       }
   });
 });
+
+// TCP Socekt
+const tcpNetSocket = tcpNet.createServer((tcpSocket) => {
+  console.log(`TCP Socket : ${tcpSocket.address().address}`);
+  tcpSocket.write('TCP NET CONNECT !'); // SEND Client
+  tcpSocket.on('data', (tcpData) => console.log(data));
+  tcpSocket.on('timeout', () => console.log('Time Out'));
+  tcpSocket.on('end', () => console.log('TCP END'));
+  tcpSocket.on('close', () => console.log('Close TCP'));
+});
+
+tcpNetSocket.on('connection', (data) => console.log(data));
+tcpNetSocket.on('error', (err) => console.log(err));
+tcpNetSocket.listen(4000,() => console.log("Tcp Socket Server On : Port 4000"))
+
+console.log(tcpNet.isIP('127.0.0.1'));
+console.log(tcpNet.isIPv4('127.0.0.1'));
+console.log(tcpNet.isIPv6('127.0.0.1'));
+
+// Modbus Client
+const modBusIp = '127.0.0.1'; //LocalHost
+const port = 8502;
+const modPort = 8000;
+const gy = '255.255.255.0';
+ModbusRTUtcpClient.connectTCP(modBusIp, { port: modPort });
+ModbusRTUtcpClient.setID(1);
+console.log(`Modbus is OPEN ? ${ModbusRTUtcpClient.isOpen}`);
+
+setTimeout(function(){
+  ModbusRTUtcpClient.readHoldingRegisters(0, 10, function(err, data) {
+    // var d = data;
+    // console.log(d);
+    console.log(data);
+    // console.log(decodeURI(d))
+  });
+  ModbusRTUtcpClient.readDeviceIdentification(1,0,function(err, data){
+    console.log(data);
+    // console.log(data.data['0']);
+    // console.log(data.data['1']);
+    // console.log(data.data['2']);
+    // console.log(data.data['5']);
+    // console.log(data.data['151']);
+    // console.log(data.data['171']);
+  });
+
+  ModbusRTUtcpClient.readCoils(1,100,function(err, data){
+    console.log(data);
+    // console.log(data.buffer.toString('utf8'));
+    // console.log(data.buffer.toString('hex'));
+  });
+}, 1000);
