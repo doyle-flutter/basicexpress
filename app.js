@@ -1,8 +1,12 @@
 // 
 // 
 // NODE.js(Express) - JS
-// 
-// 
+// * Reverse Proxying (WEB) Server - Nginx(보안이슈)
+// ** Socket은 직접 연결 또는 Tcp Module 사용 - Nginx 1.1.x 버전
+// **** 구성 파일 위치 : cd /usr/local/etc/nginx/nginx.conf
+// **** nginx : 서버시작 --> 기본 구성 : localhost:8080
+// **** nginx -s stop : 서버종료
+// **** nginx 0s reload : 서버재시작
 
 var express = require('express'), 
   app = express(),
@@ -16,6 +20,7 @@ var express = require('express'),
   // TCP : 데이터를 작게 나누어서(패킷) 다른쪽으로 옮기고, 이를 다시 조립하여 원래의 데이터로 만드는 규칙
   http = require('http').Server(app),
   https = require('https').createServer({key: key, cert: cert }, app),
+  axios = require('axios'),
   tcpNet = require('net'),
   // Modbus Tcp 통신
   ModbusRTU = require('modbus-serial'),
@@ -29,7 +34,25 @@ var express = require('express'),
   pug = require('pug'),
   cors = require('cors'),
   logger = require('morgan'),
+  wt = require("worker-thread"),
   port = process.env.PORT || 3000;
+
+function worker(n) {
+  return n;
+}
+  
+const ch = wt.createChannel(worker, 10);
+  
+ch.on("done", (err, result) => {
+  if (err) return console.error(err);
+  console.log(`result : ${result}`);
+});
+  
+ch.on("stop", () => {
+  console.log("channel is stop");
+});
+let dd = () => console.log('dddd');
+ch.add(dd());
 
 // Router Files
 const sqlRouter = require('./routers/sqlrouter.js'),
@@ -105,6 +128,11 @@ app.use('/graphqlserver', graphqlRouter);
 app.use('/streamingRouter', streamingRouter);
 app.use('/pyserver', pyServerRouter);
 app.get('/rtc', (req, res) => res.sendFile(path.join(__dirname,'./views/rtc.html')));
+
+app.get('/vueTarget', (req,res) => res.sendFile(path.join(__dirname, './views/designVue1.html')))
+app.get('/withDjango/kakaopay',(req,res) => {
+  res.send("Hi! DJango?!");
+})
 
 // non path
 app.use('*',(req,res, next) => res.json("404 ! Not Found !"));
@@ -199,35 +227,37 @@ console.log(tcpNet.isIP('127.0.0.1'));
 console.log(tcpNet.isIPv4('127.0.0.1'));
 console.log(tcpNet.isIPv6('127.0.0.1'));
 
-// Modbus Client
-const modBusIp = '127.0.0.1'; //LocalHost
-const modBusPort = 8502;
-const modPort = 8000;
-const gy = '255.255.255.0';
-ModbusRTUtcpClient.connectTCP(modBusIp, { port: modPort });
-ModbusRTUtcpClient.setID(1);
-console.log(`Modbus is OPEN ? ${ModbusRTUtcpClient.isOpen}`);
 
-setTimeout(function(){
-  ModbusRTUtcpClient.readHoldingRegisters(0, 10, function(err, data) {
-    // var d = data;
-    // console.log(d);
-    console.log(data);
-    // console.log(decodeURI(d))
-  });
-  ModbusRTUtcpClient.readDeviceIdentification(1,0,function(err, data){
-    console.log(data);
-    // console.log(data.data['0']);
-    // console.log(data.data['1']);
-    // console.log(data.data['2']);
-    // console.log(data.data['5']);
-    // console.log(data.data['151']);
-    // console.log(data.data['171']);
-  });
 
-  ModbusRTUtcpClient.readCoils(1,100,function(err, data){
-    console.log(data);
-    // console.log(data.buffer.toString('utf8'));
-    // console.log(data.buffer.toString('hex'));
-  });
-}, 1000);
+// // Modbus Client
+// const modBusIp = '127.0.0.1'; //LocalHost
+// const modBusPort = 8502;
+// const modPort = 8000;
+// const gy = '255.255.255.0';
+// ModbusRTUtcpClient.connectTCP(modBusIp, { port: modPort });
+// ModbusRTUtcpClient.setID(1);
+// console.log(`Modbus is OPEN ? ${ModbusRTUtcpClient.isOpen}`);
+
+// setTimeout(function(){
+//   ModbusRTUtcpClient.readHoldingRegisters(0, 10, function(err, data) {
+//     // var d = data;
+//     // console.log(d);
+//     console.log(data);
+//     // console.log(decodeURI(d))
+//   });
+//   ModbusRTUtcpClient.readDeviceIdentification(1,0,function(err, data){
+//     console.log(data);
+//     // console.log(data.data['0']);
+//     // console.log(data.data['1']);
+//     // console.log(data.data['2']);
+//     // console.log(data.data['5']);
+//     // console.log(data.data['151']);
+//     // console.log(data.data['171']);
+//   });
+
+//   ModbusRTUtcpClient.readCoils(1,100,function(err, data){
+//     console.log(data);
+//     // console.log(data.buffer.toString('utf8'));
+//     // console.log(data.buffer.toString('hex'));
+//   });
+// }, 1000);
