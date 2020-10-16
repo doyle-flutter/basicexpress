@@ -35,7 +35,8 @@ var express = require('express'),
   cors = require('cors'),
   logger = require('morgan'),
   wt = require("worker-thread"),
-  port = process.env.PORT || 3000;
+  port = process.env.PORT || 3000,
+  ADMIN_KEY = "";
 
 function worker(n) {
   return n;
@@ -130,8 +131,74 @@ app.use('/pyserver', pyServerRouter);
 app.get('/rtc', (req, res) => res.sendFile(path.join(__dirname,'./views/rtc.html')));
 
 app.get('/vueTarget', (req,res) => res.sendFile(path.join(__dirname, './views/designVue1.html')))
-app.get('/withDjango/kakaopay',(req,res) => {
-  res.send("Hi! DJango?!");
+app.get('/withDjango/kakaopay',async (req,res) => {
+  //KAKAO Pay Test ID : TC0ONETIME
+  let _url = 'https://kapi.kakao.com/v1/payment/ready';
+  let headers = {
+    "Authorization":`KakaoAK ${ADMIN_KEY}`,
+    "Content-type":'application/x-www-form-urlencoded;charset=utf-8'
+  };
+  let body =  {
+    'cid':'TC0ONETIME',
+    'partner_order_id':'partner_order_id',
+    'partner_user_id':'partner_user_id',
+    'item_name' : '초코빠이',
+    'quantity': '1',
+    'total_amount':'2200',
+    'vat_amount' : '200',
+    'tax_free_amount' : '0',
+    'approval_url' : 'http://192.168.0.2:3000/withDjango/kakaopay/approve',
+    'fail_url' : 'http://192.168.0.2:3000/withDjango/kakaopay/approve',
+    'cancel_url': 'http://192.168.0.2:3000/withDjango/kakaopay/approve'
+  };
+  let _res = await axios({
+      url:_url,
+      method:'POST',
+      headers,
+      params: body
+    }).catch((e) => e);
+  if(req.session.tid != undefined){
+    sess.destroy();
+  }
+  let sess = req.session;
+  let _resultUrl = _res['data']['next_redirect_pc_url'];
+  let _tid = _res['data']['tid'];
+  sess.tid = _tid;
+  sess.partner_order_id = body.partner_order_id;
+  sess.partner_user_id = body.partner_user_id;
+  res.redirect(_resultUrl);
+});
+
+app.get('/withDjango/kakaopay/approve?', async (req,res) => {
+  let sess = req.session;
+  let tid = sess.tid;
+  let partner_order_id = sess.partner_order_id;
+  let partner_user_id = sess.partner_user_id;
+  
+  // redirect qs
+  let pg_token = req.query['pg_token'];
+
+  let url = 'https://kapi.kakao.com/v1/payment/approve';
+  let headers = {
+    'Authorization': `KakaoAK ${ADMIN_KEY}`,
+    'Content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+  };
+  let body =  {
+    'cid':'TC0ONETIME',
+    partner_order_id,
+    partner_user_id,
+    pg_token,
+    tid
+  };
+  let _result = await axios({
+    url,
+    method: 'POST',
+    headers,
+    params: body
+  }).catch((e) => e);
+  sess.destroy();
+  if(_result.status == 200) return res.json(true);
+  return res.json(false);
 })
 
 // non path
