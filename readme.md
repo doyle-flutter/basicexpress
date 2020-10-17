@@ -3,6 +3,7 @@
 코드 구성 및 구현 로직을 차근히 봐주세요  
    
 ## 일정
+- 10/16~17 : Django 와 함께 카카오페이 직접 연결 [DJango 보러가기](https://github.com/doyle-flutter/basicDjangoPython)
 - 9/15 : 접속 대기 구현 - 보조 서버(Flask) 활용 
 - 9/10 : Socket 추가 & nginx 설정 및 실행 관련(./nginx.conf)
 - 9/09 : Flaks Socket 클라이언트와 연결
@@ -44,6 +45,7 @@
 - [x] 보조 서버(Flask)의 Socket 클라이언트와 연결. 단, '보조'는 메인 서버의 기능을 보충하는 역할
 - [ ] 보조 서버(Flask) 활용 및 Flutter 연결. 단, '보조'는 메인 서버의 기능을 보충하는 역할
 - [ ] MongoDB : (예정)
+- [x] DJango 서버와 함께 카카오페이 직접 연결
 - [ ] Flask - Tensorflow & Keras (예정)
 - [x] NginX : 리버스 프록시 웹서버 설정(./nginx.conf)
 - [ ] 배포 : AWS, GCP, Firebase, cafe24, 구름IDE 등 (예정)

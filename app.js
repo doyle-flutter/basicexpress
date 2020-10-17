@@ -36,6 +36,10 @@ var express = require('express'),
   logger = require('morgan'),
   wt = require("worker-thread"),
   port = process.env.PORT || 3000,
+  low = require('lowdb'),
+  FileSync = require('lowdb/adapters/FileSync'),
+  adapter = new FileSync('./lowdb.json'),
+  lowdb = low(adapter),
   ADMIN_KEY = "";
 
 function worker(n) {
@@ -100,6 +104,12 @@ app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'html'));
 app.use(express.static(path.join(__dirname, 'html')));
 
+// Low DB Setting
+app.use((req,res, next) => {
+  lowdb.defaults({'tid':"", 'partner_user_id':'', 'partner_order_id':''}).write();
+  next();
+});
+
 //app.listen(port,() => console.log("3000"));
 http.listen(port,(console.log(`${port} HTTP`)));
 https.listen(443,(console.log("443 HTTPS")));
@@ -132,13 +142,14 @@ app.get('/rtc', (req, res) => res.sendFile(path.join(__dirname,'./views/rtc.html
 
 app.get('/vueTarget', (req,res) => res.sendFile(path.join(__dirname, './views/designVue1.html')))
 app.get('/withDjango/kakaopay',async (req,res) => {
+
   //KAKAO Pay Test ID : TC0ONETIME
   let _url = 'https://kapi.kakao.com/v1/payment/ready';
   let headers = {
     "Authorization":`KakaoAK ${ADMIN_KEY}`,
     "Content-type":'application/x-www-form-urlencoded;charset=utf-8'
   };
-  let body =  {
+  let _body =  {
     'cid':'TC0ONETIME',
     'partner_order_id':'partner_order_id',
     'partner_user_id':'partner_user_id',
@@ -155,26 +166,40 @@ app.get('/withDjango/kakaopay',async (req,res) => {
       url:_url,
       method:'POST',
       headers,
-      params: body
+      params: _body
     }).catch((e) => e);
-  if(req.session.tid != undefined){
-    sess.destroy();
-  }
-  let sess = req.session;
   let _resultUrl = _res['data']['next_redirect_pc_url'];
   let _tid = _res['data']['tid'];
-  sess.tid = _tid;
-  sess.partner_order_id = body.partner_order_id;
-  sess.partner_user_id = body.partner_user_id;
-  res.redirect(_resultUrl);
+
+  // WEB 
+  // if(req.session.tid != undefined){
+  //   console.log(`SESSSSSSs ON!?`)
+  //   sess.destroy();
+  // }
+  // let sess = req.session;
+  // sess.tid = _tid;
+  // sess.partner_order_id = body.partner_order_id;
+  // sess.partner_user_id = body.partner_user_id;
+  // res.redirect(_resultUrl);
+
+  // APP
+  lowdb.set('tid', _tid).write();
+  lowdb.set('partner_order_id', _body.partner_order_id).write();
+  lowdb.set('partner_user_id', _body.partner_user_id).write();
+  res.json(_resultUrl);
 });
 
 app.get('/withDjango/kakaopay/approve?', async (req,res) => {
-  let sess = req.session;
-  let tid = sess.tid;
-  let partner_order_id = sess.partner_order_id;
-  let partner_user_id = sess.partner_user_id;
-  
+  // WEB
+  // let sess = req.session;
+  // let tid = sess.tid;
+  // let partner_order_id = sess.partner_order_id;
+  // let partner_user_id = sess.partner_user_id;
+
+  let tid = lowdb.get('tid').value();
+  let partner_order_id = lowdb.get('partner_order_id').value();
+  let partner_user_id = lowdb.get('partner_user_id').value();
+
   // redirect qs
   let pg_token = req.query['pg_token'];
 
@@ -195,11 +220,13 @@ app.get('/withDjango/kakaopay/approve?', async (req,res) => {
     method: 'POST',
     headers,
     params: body
-  }).catch((e) => e);
-  sess.destroy();
-  if(_result.status == 200) return res.json(true);
-  return res.json(false);
-})
+  }).catch((e) => {
+    console.log(e);
+    return e;
+  });
+  if(_result.status == 200) return res.sendFile(path.join(__dirname,'./views/kakaopay.html'));
+  return res.send(false);
+});
 
 // non path
 app.use('*',(req,res, next) => res.json("404 ! Not Found !"));
