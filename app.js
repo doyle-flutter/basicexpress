@@ -40,7 +40,50 @@ var express = require('express'),
   FileSync = require('lowdb/adapters/FileSync'),
   adapter = new FileSync('./lowdb.json'),
   lowdb = low(adapter),
-  ADMIN_KEY = "";
+  ADMIN_KEY = "",
+  mqtt = require('mqtt'),
+  mqttOptions = {
+    host: '127.0.0.1',
+    port: 8883,
+    protocol: 'mqtts',
+    username:"steve",
+    password:"password",
+  },
+  mqttClient = mqtt.connect(mqttOptions);
+
+mqttClient.on('connect', () => {
+  const mqttPublishOptions = {
+    retain:true,
+    qos:1
+    // 0 : 한번만 이벤트 발송
+    // 1 : 수신에 성공할때까지
+    // 2 : 중복처리 무조건 정확히 한번 성공까지
+  };
+  mqttClient.publish("testtopic", "test message", mqttPublishOptions);
+  const topic_s="topic";
+  const topic_list=["topic2","topic3","topic4"];
+  const topic_o={"topic22":0,"topic33":1,"topic44":1};
+  mqttClient.subscribe(topic_s, {qos:1});
+  mqttClient.subscribe(topic_list, {qos:1});
+  mqttClient.subscribe(topic_o);
+  console.log(`connect MQTT : ${mqttClient.connected}`);
+});
+
+// mqttClient.on("error", (error) => { 
+//   console.log("Can't connect" + error);
+// });
+// Error Process Close 
+mqttClient.on("error", (error) => {
+    console.log("Can't connect" + error);
+    process.exit(1);
+  },
+);
+
+mqttClient.on('message', (topic, message, packet) => {
+	console.log("message is "+ message);
+	console.log("topic is "+ topic);
+});
+
 
 function worker(n) {
   return n;
@@ -139,14 +182,14 @@ app.use('/graphqlserver', graphqlRouter);
 app.use('/streamingRouter', streamingRouter);
 app.use('/pyserver', pyServerRouter);
 app.get('/rtc', (req, res) => res.sendFile(path.join(__dirname,'./views/rtc.html')));
-
 app.get('/vueTarget', (req,res) => res.sendFile(path.join(__dirname, './views/designVue1.html')))
+
 app.get('/withDjango/kakaopay',async (req,res) => {
 
   //KAKAO Pay Test ID : TC0ONETIME
   let _url = 'https://kapi.kakao.com/v1/payment/ready';
-  let headers = {
-    "Authorization":`KakaoAK ${ADMIN_KEY}`,
+  let headers = { 
+    "Authorization":`KakaoAK ${ADMIN_KEY}`, 
     "Content-type":'application/x-www-form-urlencoded;charset=utf-8'
   };
   let _body =  {
@@ -162,14 +205,6 @@ app.get('/withDjango/kakaopay',async (req,res) => {
     'fail_url' : 'http://192.168.0.2:3000/withDjango/kakaopay/approve',
     'cancel_url': 'http://192.168.0.2:3000/withDjango/kakaopay/approve'
   };
-  let _res = await axios({
-      url:_url,
-      method:'POST',
-      headers,
-      params: _body
-    }).catch((e) => e);
-  let _resultUrl = _res['data']['next_redirect_pc_url'];
-  let _tid = _res['data']['tid'];
 
   // WEB 
   // if(req.session.tid != undefined){
@@ -182,19 +217,28 @@ app.get('/withDjango/kakaopay',async (req,res) => {
   // sess.partner_user_id = body.partner_user_id;
   // res.redirect(_resultUrl);
 
-  // APP
+  let _res = await axios({
+      url:_url,
+      method:'POST',
+      headers,
+      params: _body
+    }).catch((e) => e);
+  let _resultUrl = _res['data']['next_redirect_pc_url'];
+  let _tid = _res['data']['tid'];
+
   lowdb.set('tid', _tid).write();
   lowdb.set('partner_order_id', _body.partner_order_id).write();
   lowdb.set('partner_user_id', _body.partner_user_id).write();
   res.json(_resultUrl);
 });
 
-app.get('/withDjango/kakaopay/approve?', async (req,res) => {
   // WEB
   // let sess = req.session;
   // let tid = sess.tid;
   // let partner_order_id = sess.partner_order_id;
   // let partner_user_id = sess.partner_user_id;
+
+app.get('/withDjango/kakaopay/approve?', async (req,res) => {
 
   let tid = lowdb.get('tid').value();
   let partner_order_id = lowdb.get('partner_order_id').value();
@@ -202,12 +246,13 @@ app.get('/withDjango/kakaopay/approve?', async (req,res) => {
 
   // redirect qs
   let pg_token = req.query['pg_token'];
-
+  
   let url = 'https://kapi.kakao.com/v1/payment/approve';
   let headers = {
     'Authorization': `KakaoAK ${ADMIN_KEY}`,
     'Content-type': 'application/x-www-form-urlencoded;charset=utf-8'
   };
+
   let body =  {
     'cid':'TC0ONETIME',
     partner_order_id,
@@ -215,6 +260,7 @@ app.get('/withDjango/kakaopay/approve?', async (req,res) => {
     pg_token,
     tid
   };
+
   let _result = await axios({
     url,
     method: 'POST',

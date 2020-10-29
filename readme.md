@@ -42,6 +42,7 @@
 - [x] Vue.js : Vue.js + Express + MySQL
 - [x] TCP Socket & Modbus-TCP Client / Server
 - [ ] UDP (예정)
+- [x] MQTT Client (Server & Broker 제외)
 - [x] 보조 서버(Flask)의 Socket 클라이언트와 연결. 단, '보조'는 메인 서버의 기능을 보충하는 역할
 - [ ] 보조 서버(Flask) 활용 및 Flutter 연결. 단, '보조'는 메인 서버의 기능을 보충하는 역할
 - [ ] MongoDB : (예정)
