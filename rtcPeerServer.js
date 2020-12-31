@@ -15,7 +15,9 @@ var express = require('express'),
 app.set('view engine', 'ejs');
 app.use(express.static('/views'));
 app.get('/', (req, res) => res.redirect(`/123`));
-app.get('/:room', (req, res) => res.render('room', { roomId: req.params.room }));
+app.get('/a', (req, res) => res.redirect(`/123`));
+// app.get('/:room', (req, res) => res.render('room', { roomId: req.params.room }));
+app.get('/:room', (req, res) => res.sendFile(path.join(__dirname, './views/room.html')));
 
 io.on('connection', (socket) => {
   socket.on('join-room', (roomId, userId) => {
