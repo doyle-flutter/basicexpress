@@ -1,25 +1,8 @@
 # basicexpress
 (JS ES6 기준) 다양한 방법으로 구성하였습니다  
 코드 구성 및 구현 로직을 차근히 봐주세요  
-   
-## 일정
-- 10/16~17 : Django 와 함께 카카오페이 직접 연결 [DJango 보러가기](https://github.com/doyle-flutter/basicDjangoPython)
-- 9/15 : 접속 대기 구현 - 보조 서버(Flask) 활용 
-- 9/10 : Socket 추가 & nginx 설정 및 실행 관련(./nginx.conf)
-- 9/09 : Flaks Socket 클라이언트와 연결
-- 9/07 : TCP Socket & Modbus-TCP Client / Server(./modbusserver.js 참고) 예정
-- 8/27 : Vue.js + Express + MySQL
-- 8/26 : multer를 이용한 영상 업로드
-- 8/23 : Streaming MP3 안드로이드 및 아이폰 테스트 완료
-- 8/20 : GraphQL & MySQL(mysql2/promise)
-- 8/18 : https 개발자 인증서 & webRTC 구현
-- 8/17 : FCM 코드 배포
-- 8/13 카카오 로그인 및 로그아웃
-- 8/12 Flutter 연결에 중점을 두고 있습니다  
-- 8/11 socket 채팅 보완, Flutter 적용 부분 일부 수정  
-- 8/10 MySQL CRUD  
-- 8/9 채팅 구현 완료  
-  
+초급~중급을 대상으로하므로 입문하시는 경우 생활코딩 등의 자료를 통해 학습하신 뒤 봐주시면 좋습니다
+
 ## 목록
 - [x] 기본 사용
 - [x] 리팩토링 : 라우터를 분리하였습니다
@@ -41,17 +24,27 @@
 - [x] 예외 처리 : 일부 적용
 - [x] Vue.js : Vue.js + Express + MySQL
 - [x] TCP Socket & Modbus-TCP Client / Server
-- [ ] UDP (예정)
 - [x] MQTT Client (Server & Broker 제외)
 - [x] 보조 서버(Flask)의 Socket 클라이언트와 연결. 단, '보조'는 메인 서버의 기능을 보충하는 역할
-- [ ] 보조 서버(Flask) 활용 및 Flutter 연결. 단, '보조'는 메인 서버의 기능을 보충하는 역할
-- [ ] MongoDB : (예정)
+- [x] Redis : GET & SET(Flutter 연결 예정) [코드](https://github.com/doyle-flutter/basicexpress/blob/master/redisserver.js)
 - [x] DJango 서버와 함께 카카오페이 직접 연결
-- [ ] Flask - Tensorflow & Keras (예정)
 - [x] NginX : 리버스 프록시 웹서버 설정(./nginx.conf)
-- [ ] 배포 : AWS, GCP, Firebase, cafe24, 구름IDE 등 (예정)
 
-## 비고
-코드는 단순하지만 모든 걸 쏟아낼 레포가 되길 바라며 많은 기능을 추가하겠습니다
-
-감사합니다 :)
+## 일정
+- 11/15 : Redis 
+- 10/16~17 : Django 와 함께 카카오페이 직접 연결 [DJango 보러가기](https://github.com/doyle-flutter/basicDjangoPython)
+- 9/15 : 접속 대기 구현 - 보조 서버(Flask) 활용 
+- 9/10 : Socket 추가 & nginx 설정 및 실행 관련(./nginx.conf)
+- 9/09 : Flaks Socket 클라이언트와 연결
+- 9/07 : TCP Socket & Modbus-TCP Client / Server(./modbusserver.js 참고) 예정
+- 8/27 : Vue.js + Express + MySQL
+- 8/26 : multer를 이용한 영상 업로드
+- 8/23 : Streaming MP3 안드로이드 및 아이폰 테스트 완료
+- 8/20 : GraphQL & MySQL(mysql2/promise)
+- 8/18 : https 개발자 인증서 & webRTC 구현
+- 8/17 : FCM 코드 배포
+- 8/13 카카오 로그인 및 로그아웃
+- 8/12 Flutter 연결에 중점을 두고 있습니다  
+- 8/11 socket 채팅 보완, Flutter 적용 부분 일부 수정  
+- 8/10 MySQL CRUD  
+- 8/9 채팅 구현 완료  
