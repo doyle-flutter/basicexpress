@@ -1,5 +1,3 @@
-// 
-// 
 // NODE.js(Express) - JS
 // * Reverse Proxying (WEB) Server - Nginx(보안이슈)
 // ** Socket은 직접 연결 또는 Tcp Module 사용 - Nginx 1.1.x 버전
@@ -40,49 +38,49 @@ var express = require('express'),
   FileSync = require('lowdb/adapters/FileSync'),
   adapter = new FileSync('./lowdb.json'),
   lowdb = low(adapter),
-  ADMIN_KEY = "",
-  mqtt = require('mqtt'),
-  mqttOptions = {
-    host: '127.0.0.1',
-    port: 8883,
-    protocol: 'mqtts',
-    username:"steve",
-    password:"password",
-  },
-  mqttClient = mqtt.connect(mqttOptions);
+  ADMIN_KEY = "";
+  // mqtt = require('mqtt'),
+  // mqttOptions = {
+  //   host: '127.0.0.1',
+  //   port: 8883,
+  //   protocol: 'mqtts',
+  //   username:"steve",
+  //   password:"password",
+  // },
+  // mqttClient = mqtt.connect(mqttOptions);
 
-mqttClient.on('connect', () => {
-  const mqttPublishOptions = {
-    retain:true,
-    qos:1
-    // 0 : 한번만 이벤트 발송
-    // 1 : 수신에 성공할때까지
-    // 2 : 중복처리 무조건 정확히 한번 성공까지
-  };
-  mqttClient.publish("testtopic", "test message", mqttPublishOptions);
-  const topic_s="topic";
-  const topic_list=["topic2","topic3","topic4"];
-  const topic_o={"topic22":0,"topic33":1,"topic44":1};
-  mqttClient.subscribe(topic_s, {qos:1});
-  mqttClient.subscribe(topic_list, {qos:1});
-  mqttClient.subscribe(topic_o);
-  console.log(`connect MQTT : ${mqttClient.connected}`);
-});
-
-// mqttClient.on("error", (error) => { 
-//   console.log("Can't connect" + error);
+// mqttClient.on('connect', () => {
+//   const mqttPublishOptions = {
+//     retain:true,
+//     qos:1
+//     // 0 : 한번만 이벤트 발송
+//     // 1 : 수신에 성공할때까지
+//     // 2 : 중복처리 무조건 정확히 한번 성공까지
+//   };
+//   mqttClient.publish("testtopic", "test message", mqttPublishOptions);
+//   const topic_s="topic";
+//   const topic_list=["topic2","topic3","topic4"];
+//   const topic_o={"topic22":0,"topic33":1,"topic44":1};
+//   mqttClient.subscribe(topic_s, {qos:1});
+//   mqttClient.subscribe(topic_list, {qos:1});
+//   mqttClient.subscribe(topic_o);
+//   console.log(`connect MQTT : ${mqttClient.connected}`);
 // });
-// Error Process Close 
-mqttClient.on("error", (error) => {
-    console.log("Can't connect" + error);
-    process.exit(1);
-  },
-);
 
-mqttClient.on('message', (topic, message, packet) => {
-	console.log("message is "+ message);
-	console.log("topic is "+ topic);
-});
+// // mqttClient.on("error", (error) => { 
+// //   console.log("Can't connect" + error);
+// // });
+// // Error Process Close 
+// mqttClient.on("error", (error) => {
+//     console.log("Can't connect" + error);
+//     process.exit(1);
+//   },
+// );
+
+// mqttClient.on('message', (topic, message, packet) => {
+// 	console.log("message is "+ message);
+// 	console.log("topic is "+ topic);
+// });
 
 
 function worker(n) {
@@ -182,6 +180,17 @@ app.use('/graphqlserver', graphqlRouter);
 app.use('/streamingRouter', streamingRouter);
 app.use('/pyserver', pyServerRouter);
 app.get('/rtc', (req, res) => res.sendFile(path.join(__dirname,'./views/rtc.html')));
+app.get('/rtc/2', (req, res) => res.sendFile(path.join(__dirname,'./views/rtc2.html')));
+const { ExpressPeerServer } = require('peer'); 
+const peerServer = ExpressPeerServer(http,{ 
+  debug: true,
+  path: '/rtcc',
+  generateClientId: "asd",
+});
+peerServer.on('connection', (conn) => {
+  console.log(`conn ${conn}`);
+});
+
 app.get('/vueTarget', (req,res) => res.sendFile(path.join(__dirname, './views/designVue1.html')))
 
 app.get('/withDjango/kakaopay',async (req,res) => {
@@ -312,12 +321,11 @@ iochat.of('/soc2').on('connect',(nSocket) => {
   })    
 });
 
-io.on('connection', (socket) => {
-  
+io.sockets.on('connection',socket=>{
   function log() {
-    let array = ['Message from server:'];
-    array.push.apply(array,arguments);
-    socket.emit('log',array);
+      let array = ['Message from server:'];
+      array.push.apply(array,arguments);
+      socket.emit('log',array);
   }
 
   socket.on('message',message=>{
@@ -331,13 +339,14 @@ io.on('connection', (socket) => {
       log('Room ' + room + ' now has ' + numClients + ' client(s)');
       
       if(numClients === 0){
-
+          console.log('create room!');
           socket.join(room);
-
+          log('Client ID ' + socket.id + ' created room ' + room);
           socket.emit('created',room,socket.id);
       }
       else if(numClients===1){
-
+          console.log('join room!');
+          log('Client Id' + socket.id + 'joined room' + room);
           io.sockets.in(room).emit('join',room);
           socket.join(room);
           socket.emit('joined',room,socket.id);
@@ -346,26 +355,25 @@ io.on('connection', (socket) => {
           socket.emit('full',room);
       }
   });
-
 });
 
 // TCP Socekt
-const tcpNetSocket = tcpNet.createServer((tcpSocket) => {
-  console.log(`TCP Socket : ${tcpSocket.address().address}`);
-  tcpSocket.write('TCP NET CONNECT !'); // SEND Client
-  tcpSocket.on('data', (tcpData) => console.log(data));
-  tcpSocket.on('timeout', () => console.log('Time Out'));
-  tcpSocket.on('end', () => console.log('TCP END'));
-  tcpSocket.on('close', () => console.log('Close TCP'));
-});
+// const tcpNetSocket = tcpNet.createServer((tcpSocket) => {
+//   console.log(`TCP Socket : ${tcpSocket.address().address}`);
+//   tcpSocket.write('TCP NET CONNECT !'); // SEND Client
+//   tcpSocket.on('data', (tcpData) => console.log(data));
+//   tcpSocket.on('timeout', () => console.log('Time Out'));
+//   tcpSocket.on('end', () => console.log('TCP END'));
+//   tcpSocket.on('close', () => console.log('Close TCP'));
+// });
 
-tcpNetSocket.on('connection', (data) => console.log(data));
-tcpNetSocket.on('error', (err) => console.log(err));
-tcpNetSocket.listen(4000,() => console.log("Tcp Socket Server On : Port 4000"))
+// tcpNetSocket.on('connection', (data) => console.log(data));
+// tcpNetSocket.on('error', (err) => console.log(err));
+// tcpNetSocket.listen(4000,() => console.log("Tcp Socket Server On : Port 4000"))
 
-console.log(tcpNet.isIP('127.0.0.1'));
-console.log(tcpNet.isIPv4('127.0.0.1'));
-console.log(tcpNet.isIPv6('127.0.0.1'));
+// console.log(tcpNet.isIP('127.0.0.1'));
+// console.log(tcpNet.isIPv4('127.0.0.1'));
+// console.log(tcpNet.isIPv6('127.0.0.1'));
 
 
 
