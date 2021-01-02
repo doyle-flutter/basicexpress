@@ -15,12 +15,15 @@ var express = require('express'),
 app.set('view engine', 'ejs');
 app.use(express.static('/views'));
 app.get('/', (req, res) => res.redirect(`/123`));
-app.get('/a', (req, res) => res.redirect(`/123`));
+app.get('/a', (req, res) => res.json(`/123`));
 // app.get('/:room', (req, res) => res.render('room', { roomId: req.params.room }));
+app.get('/2/:room', (req, res) => res.sendFile(path.join(__dirname, './views/roomTest.html')));
 app.get('/:room', (req, res) => res.sendFile(path.join(__dirname, './views/room.html')));
 
 io.on('connection', (socket) => {
+  console.log('connection ! ');
   socket.on('join-room', (roomId, userId) => {
+    console.log(`JOIN : ${roomId} ${userId}`);
     socket.join(roomId);
     socket.to(roomId).broadcast.emit('user-connected', userId);
     socket.on('disconnect', () => socket.to(roomId).broadcast.emit('user-disconnected', userId));

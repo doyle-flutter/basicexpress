@@ -4,13 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>JAMES_DEV</title>
+    <title>JAMES_DEV_TEST only PeerJS</title>
     <style>
-      #video-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, 300px);
-        grid-auto-rows: 300px;
-      }
       video {
         width: 100%;
         height: 100%;
@@ -19,50 +14,55 @@
     </style>
   </head>
   <body>
-    <div id="video-grid"></div>
-      <script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script>
-      <script src="/socket.io/socket.io.js"></script>
-      <script>
-        var ROOM_ID = window.location.pathname,
-            socket = io('/'),
-            videoGrid = document.getElementById('video-grid'),
-            myPeer = new Peer(),
-            peers = {};
-        var myVideo = document.createElement('video');
-            myVideo.autoplay = true;
-            myVideo.setAttribute('playsinline', true);
-          
-        navigator.mediaDevices.getUserMedia({ video: true, audio: true, })
-            .then((stream) => {
-                addVideoStream(myVideo, stream);
-                myPeer.on('call', (call) => {
-                    call.answer(stream);
-                    var video = document.createElement('VIDEO');
-                    call.on('stream', (userVideoStream) => addVideoStream(video, userVideoStream));
-                });
-                socket.on('user-connected', (userId) => connectToNewUser(userId, stream));
+    <video id="my"></video>
+    <video id="uu"></video>
+
+    <script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script>
+
+    <script>
+        var pa = window.location.search || "";
+        var myKey;
+        var uKey;
+        // qs 에 따라 역할을 나눔
+        if(pa === ""){
+            myKey = 'recevier'
+            uKey = 'sender';
+        }
+        else{
+            myKey = 'sender';
+            uKey = 'recevier';
+        }
+
+        var myPeer = new Peer(myKey);
+
+        myPeer.on('open', (id) => {
+            alert(`open myKey : ${id} conn u Key : ${uKey}`);
+            var conn = myPeer.connect(uKey);
+            conn.on('open', () => {
+                conn.send('안녕!');
             });
-        socket.on('user-disconnected', (userId) => {
-            if (peers[userId]) peers[userId].close();
+
+            navigator.mediaDevices.getUserMedia({video: true, audio: false})
+            .then(stream => {
+                alert("발송 준비");
+                var call = myPeer.call(uKey, stream);
+                alert("발송 ~ ~");
+                myPeer.on('call', call => {
+                    call.answer(stream);    
+                    alert('연결 받음 ~');
+                    alert('화면 발송 ~');
+                    call.on('stream', st => {
+                        alert('영상 받음 ~');
+                        var uu = document.getElementById('uu');
+                        uu.srcObject = st;
+                        uu.autoplay = true;
+                        uu.setAttribute('playsinline', true);
+                    })
+                })
+                
+            });
         });
-        myPeer.on('open', (id) => socket.emit('join-room', ROOM_ID, id));
-  
-        function connectToNewUser(userId, stream) {
-            var call = myPeer.call(userId, stream);
-            var video = document.createElement('VIDEO');
-            video.autoplay = true;
-            video.setAttribute('playsinline', true);
-            call.on('stream', (userVideoStream) => addVideoStream(video, userVideoStream));
-            call.on('close', () => video.remove());
-            peers[userId] = call;
-        }
-        function addVideoStream(video, stream) {
-            video.srcObject = stream;
-            video.autoplay = true;
-            video.setAttribute('playsinline', true);
-            video.addEventListener('loadedmetadata', () => video.play());
-            videoGrid.append(video);
-        }
-      </script>
+        
+    </script>
   </body>
 </html>
