@@ -19,7 +19,7 @@
 - [x] SNS 로그인 : 카카오 진행중
 - [x] https : 개발용 인증서 필요 (openSSL) 
 - [x] webRtc를 이용한 영상 통화,채팅(안드로이드 가능 / IOS 사파리에서 일부 가능)
-- [x] webRtc & PeerJs - [Server - HTML & PeerJS](https://github.com/doyle-flutter/basicexpress/blob/master/rtcPeerServer.js) & [Code - View EJS & PeerJS + Socket.io](https://github.com/doyle-flutter/basicexpress/blob/master/views/room.ejs) / [Code - View HTML & PeerJS + Socket.io](https://github.com/doyle-flutter/basicexpress/blob/master/views/room.html) : 윈도우 및 맥OS / IOS(Safari) 테스트 완료
+- [x] webRtc & PeerJs - [Server - HTML & PeerJS](https://github.com/doyle-flutter/basicexpress/blob/master/views/room.html) & [Code - View HTML & PeerJS + Socket.io](https://github.com/doyle-flutter/basicexpress/blob/master/views/roomTest.html) / [Code - View EJS & PeerJS + Socket.io](https://github.com/doyle-flutter/basicexpress/blob/master/views/room.ejs) : 윈도우 및 맥OS / IOS(Safari) 테스트 완료
 - [x] GraphQL :  HTTP(S) - GraphQL & MySQL(mysql2) / express-graphQL & MySQL(mysql2) 둘 다 가능
 - [x] 오디오 또는 비디오 스트리밍 : MP3 안드로이드 및 아이폰 테스트 완료
 - [x] 예외 처리 : 일부 적용

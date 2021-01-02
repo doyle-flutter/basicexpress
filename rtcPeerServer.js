@@ -15,15 +15,18 @@ var express = require('express'),
 app.set('view engine', 'ejs');
 app.use(express.static('/views'));
 app.get('/', (req, res) => res.redirect(`/123`));
-app.get('/a', (req, res) => res.json(`/123`));
-// app.get('/:room', (req, res) => res.render('room', { roomId: req.params.room }));
-app.get('/2/:room', (req, res) => res.sendFile(path.join(__dirname, './views/roomTest.html')));
+
+// Server - HTML & PeerJS
 app.get('/:room', (req, res) => res.sendFile(path.join(__dirname, './views/room.html')));
 
+// Code - View EJS & PeerJS + Socket.io 
+// app.get('/:room', (req, res) => res.sendFile(path.join(__dirname, './views/roomTest.html')));
+
+// Code - View EJS & PeerJS + Socket.io
 io.on('connection', (socket) => {
   console.log('connection ! ');
   socket.on('join-room', (roomId, userId) => {
-    console.log(`JOIN : ${roomId} ${userId}`);
+    console.log(`JOIN : roomId - ${roomId} / userId - ${userId}`);
     socket.join(roomId);
     socket.to(roomId).broadcast.emit('user-connected', userId);
     socket.on('disconnect', () => socket.to(roomId).broadcast.emit('user-disconnected', userId));
