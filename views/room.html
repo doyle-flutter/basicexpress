@@ -23,6 +23,7 @@
         var pa = window.location.search || "";
         var myKey;
         var uKey;
+        
         // qs 에 따라 역할을 나눔
         if(pa === ""){
             myKey = 'recevier'
@@ -37,32 +38,25 @@
 
         myPeer.on('open', (id) => {
             alert(`open myKey : ${id} conn u Key : ${uKey}`);
-            var conn = myPeer.connect(uKey);
-            conn.on('open', () => {
-                conn.send('안녕!');
-            });
-
             navigator.mediaDevices.getUserMedia({video: true, audio: false})
-            .then(stream => {
-                alert("발송 준비");
-                var call = myPeer.call(uKey, stream);
-                alert("발송 ~ ~");
-                myPeer.on('call', call => {
-                    call.answer(stream);    
-                    alert('연결 받음 ~');
-                    alert('화면 발송 ~');
-                    call.on('stream', st => {
-                        alert('영상 받음 ~');
-                        var uu = document.getElementById('uu');
-                        uu.srcObject = st;
-                        uu.autoplay = true;
-                        uu.setAttribute('playsinline', true);
-                    })
-                })
-                
-            });
+                .then(stream => {
+                    alert("발송 준비");
+                    var call = myPeer.call(uKey, stream);
+                    alert("발송 ~ ~");
+                    myPeer.on('call', call => {
+                        alert('연결 받음 ~');
+                        call.answer(stream); 
+                        alert('화면 발송 ~');
+                        call.on('stream', st => {
+                            alert('영상 받음 ~');
+                            var uu = document.getElementById('uu');
+                            uu.srcObject = st;
+                            uu.autoplay = true;
+                            uu.setAttribute('playsinline', true);
+                        });
+                    }); 
+                });
         });
-        
     </script>
   </body>
 </html>
