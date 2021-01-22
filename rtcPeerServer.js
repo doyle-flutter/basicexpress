@@ -20,9 +20,10 @@ app.get('/', (req, res) => res.redirect(`/123`));
 app.get('/:room', (req, res) => res.sendFile(path.join(__dirname, './views/room.html')));
 
 // Code - View EJS & PeerJS + Socket.io 
-// app.get('/:room', (req, res) => res.sendFile(path.join(__dirname, './views/roomTest.html')));
+// 예정
 
 // Code - View EJS & PeerJS + Socket.io
+// 예정
 io.on('connection', (socket) => {
   console.log('connection ! ');
   socket.on('join-room', (roomId, userId) => {
