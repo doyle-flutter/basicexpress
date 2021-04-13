@@ -1,4 +1,5 @@
-$ pm2 start app.js
+$ pm2 start app.js || pm2 start app.js --watch
+$ pm2 monit
 
 // -- -- --
 
