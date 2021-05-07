@@ -30,4 +30,4 @@
 - [x] Redis : GET & SET(Flutter 연결 예정) [코드](https://github.com/doyle-flutter/basicexpress/blob/master/redisserver.js)
 - [x] DJango 서버와 함께 카카오페이 직접 연결
 - [x] NginX : 리버스 프록시 웹서버 설정(./nginx.conf)
-- [x] TEST / DDOS / Stress TEST : Artillery [JSON File]() & [Target Server]()
+- [x] TEST / DDOS / Stress TEST : Artillery [JSON File](https://github.com/doyle-flutter/basicexpress/blob/master/test/artillery.json) & [Target Server](https://github.com/doyle-flutter/basicexpress/blob/master/test/targetServer.js)
